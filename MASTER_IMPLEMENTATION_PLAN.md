@@ -128,9 +128,8 @@ msec-smart-stock/
 ### 3.1 Adaptive Cross-Device Display Engine
 A key institutional requirement is that the UI must look sharp, comfortable, and perfectly proportioned on **every device** without horizontal scrollbars or clipped text:
 * **High-Resolution Desktop PCs (1080p, 1440p, 4K):** Generous content gutters, 2-column KPI card layouts, wide data tables with clean typography.
-* **Standard Laptops (1366×768 to 1536×864):** Adaptive font clamp (`clamp(14px, 0.85rem + 0.22vw, 16.5px)`) and flexible sidebar widths (`clamp(240px, 16vw, 275px)`).
-* **Windows Display Scaling (100%, 125%, 150% DPI):** Dynamic JavaScript Auto-Fit controller in `views/layout/header.php` detecting `window.devicePixelRatio` and preventing double-zoom distortion.
-* **Tablets & Mobile Phones:** Off-canvas sliding navigation drawer, touch-friendly touch targets (min 44px), scrollable horizontal data-table containers, and responsive stacked summary cards.
+* **Windows Display Scaling (100%, 125%, 150% DPI):** 100% natural fluid CSS containment with zero artificial zoom hacks, adaptive auto-truncating header typography, flexible KPI grids, and zero window horizontal scrolling across any resolution.
+* **Tablets & Mobile Phones:** Off-canvas sliding navigation drawer with built-in role switcher, touch-friendly touch targets (min 42px), smooth internal swipeable table containers, and stacked responsive summary cards.
 
 ---
 

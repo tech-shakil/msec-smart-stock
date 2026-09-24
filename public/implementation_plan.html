@@ -375,9 +375,9 @@ Deployment Stack:     Modular PHP 8.2 (OOP) | Dual Engine (SQLite 3 / MariaDB 10
 <h3>3.1 Adaptive Cross-Device Display Engine</h3>
 A key institutional requirement is that the UI must look sharp, comfortable, and perfectly proportioned on <strong>every device</strong> without horizontal scrollbars or clipped text:
 <em> <strong>High-Resolution Desktop PCs (1080p, 1440p, 4K):</strong> Generous content gutters, 2-column KPI card layouts, wide data tables with clean typography.
-</em> <strong>Standard Laptops (1366×768 to 1536×864):</strong> Adaptive font clamp (<code>clamp(14px, 0.85rem + 0.22vw, 16.5px)</code>) and flexible sidebar widths (<code>clamp(240px, 16vw, 275px)</code>).
-<em> <strong>Windows Display Scaling (100%, 125%, 150% DPI):</strong> Dynamic JavaScript Auto-Fit controller in <code>views/layout/header.php</code> detecting <code>window.devicePixelRatio</code> and preventing double-zoom distortion.
-</em> <strong>Tablets &amp; Mobile Phones:</strong> Off-canvas sliding navigation drawer, touch-friendly touch targets (min 44px), scrollable horizontal data-table containers, and responsive stacked summary cards.
+</em> <strong>Standard Laptops (1366×768 to 1536×864):</strong> Compact 240px sidebar, auto-truncating header typography, and fluid column wrapping.
+<em> <strong>Windows Display Scaling (100%, 125%, 150% DPI):</strong> 100% natural fluid CSS containment with zero artificial zoom hacks, preventing horizontal window scrollbars.
+</em> <strong>Tablets &amp; Mobile Phones:</strong> Off-canvas sliding navigation drawer with built-in role switcher, touch-friendly touch targets (min 42px), scrollable horizontal data-table containers, and stacked responsive summary cards.
 
 <hr>
 

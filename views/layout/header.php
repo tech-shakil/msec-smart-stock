@@ -136,10 +136,10 @@ $recentNotifications = Notification::getForUser($user['id'] ?? 0, $currentRole, 
                     <div class="header-title-wrap">
                         <div class="header-top-row">
                             <h1 class="portal-title"><?= APP_NAME ?></h1>
-                            <span class="header-tagline-badge"><?= APP_INSTITUTION_TAGLINE ?></span>
+                            <span class="header-tagline-badge hide-tablet-screen"><?= APP_INSTITUTION_TAGLINE ?></span>
                         </div>
                         <div class="header-institution-sub">
-                            <?= APP_INSTITUTION_FULL ?> &bull; <span class="hide-mobile"><?= APP_INSTITUTION_LOCATION ?></span>
+                            <?= APP_INSTITUTION_FULL ?> &bull; <span class="hide-tablet-screen"><?= APP_INSTITUTION_LOCATION ?></span>
                         </div>
                     </div>
                 </div>
@@ -178,43 +178,33 @@ $recentNotifications = Notification::getForUser($user['id'] ?? 0, $currentRole, 
                     </div>
                 </div>
 
-                <!-- Universal Screen Scale Controller (Auto-Fit for PC, Laptop & Windows) -->
-                <div class="desktop-scale-controls hide-mobile" title="Smart Display Scale (PC, Laptop & Windows DPI)">
-                    <span class="scale-label">🖥️ Display:</span>
-                    <button type="button" class="zoom-btn active" onclick="setAppScale('auto')" id="zoomAuto" title="Smart Auto-Fit for PC/Laptop Screen & Windows DPI">Auto-Fit</button>
-                    <button type="button" class="zoom-btn" onclick="setAppScale('100')" id="zoom100" title="100% Native">100%</button>
-                    <button type="button" class="zoom-btn" onclick="setAppScale('115')" id="zoom115" title="115% Comfortable Laptop/PC">115%</button>
-                    <button type="button" class="zoom-btn" onclick="setAppScale('125')" id="zoom125" title="125% Large PC">125%</button>
-                </div>
-
                 <!-- Demonstration Role Simulator Dropdown -->
-                <form method="GET" action="index.php" class="persona-switcher" id="personaForm">
+                <form method="GET" action="index.php" class="persona-switcher" id="personaForm" title="Switch Demo Persona">
                     <input type="hidden" name="route" value="<?= htmlspecialchars($_GET['route'] ?? 'dashboard') ?>">
                     <span class="persona-icon">🎭</span>
-                    <label for="switch_role" class="hide-mobile">Persona:</label>
-                    <select name="switch_role" id="switch_role" class="persona-select" onchange="document.getElementById('personaForm').submit();" title="Simulate different role views for review">
-                        <optgroup label="🏛️ Institutional Executive">
+                    <select name="switch_role" id="switch_role" class="persona-select" onchange="document.getElementById('personaForm').submit();" title="Simulate different role views">
+                        <optgroup label="🏛️ Executive">
                             <option value="super_admin" <?= $currentRole === 'super_admin' ? 'selected' : '' ?>>Super Admin</option>
                             <option value="director" <?= $currentRole === 'director' ? 'selected' : '' ?>>Director</option>
                             <option value="principal" <?= $currentRole === 'principal' ? 'selected' : '' ?>>Principal</option>
                             <option value="vice_principal" <?= $currentRole === 'vice_principal' ? 'selected' : '' ?>>Vice Principal</option>
-                            <option value="management_viewer" <?= $currentRole === 'management_viewer' ? 'selected' : '' ?>>Management Viewer</option>
+                            <option value="management_viewer" <?= $currentRole === 'management_viewer' ? 'selected' : '' ?>>Management</option>
                         </optgroup>
-                        <optgroup label="📦 Central Operations Gateway">
+                        <optgroup label="📦 Central Stores">
                             <option value="store_keeper" <?= $currentRole === 'store_keeper' ? 'selected' : '' ?>>Store Keeper</option>
                             <option value="purchase_officer" <?= $currentRole === 'purchase_officer' ? 'selected' : '' ?>>Purchase Officer</option>
                             <option value="accounts_officer" <?= $currentRole === 'accounts_officer' ? 'selected' : '' ?>>Accounts Officer</option>
                         </optgroup>
-                        <optgroup label="🏢 Academic Department & Lab">
+                        <optgroup label="🏢 Department">
                             <option value="hod" <?= $currentRole === 'hod' ? 'selected' : '' ?>>HOD CSE</option>
-                            <option value="dept_coordinator" <?= $currentRole === 'dept_coordinator' ? 'selected' : '' ?>>Dept Coordinator</option>
+                            <option value="dept_coordinator" <?= $currentRole === 'dept_coordinator' ? 'selected' : '' ?>>Coordinator</option>
                             <option value="lab_incharge" <?= $currentRole === 'lab_incharge' ? 'selected' : '' ?>>Lab Incharge</option>
                         </optgroup>
-                        <optgroup label="👤 Faculty & Technicians">
+                        <optgroup label="👤 Academic">
                             <option value="faculty" <?= $currentRole === 'faculty' ? 'selected' : '' ?>>Faculty</option>
                             <option value="technician" <?= $currentRole === 'technician' ? 'selected' : '' ?>>Technician</option>
                         </optgroup>
-                        <optgroup label="🛡️ Statutory Audit">
+                        <optgroup label="🛡️ Audit">
                             <option value="auditor" <?= $currentRole === 'auditor' ? 'selected' : '' ?>>Auditor</option>
                         </optgroup>
                     </select>
@@ -225,7 +215,7 @@ $recentNotifications = Notification::getForUser($user['id'] ?? 0, $currentRole, 
                     <div class="user-avatar" title="<?= htmlspecialchars($user['full_name'] ?? 'User') ?>">
                         <?= strtoupper(substr($user['full_name'] ?? 'U', 0, 1)) ?>
                     </div>
-                    <div class="user-details hide-mobile">
+                    <div class="user-details hide-laptop-compact">
                         <div class="user-name"><?= htmlspecialchars($user['full_name'] ?? 'Guest') ?></div>
                         <div class="user-role-badge">
                             <span class="role-name"><?= htmlspecialchars($roleName) ?></span>
@@ -233,25 +223,17 @@ $recentNotifications = Notification::getForUser($user['id'] ?? 0, $currentRole, 
                     </div>
                 </div>
 
-                <a href="index.php?route=logout" class="btn btn-secondary btn-sm hide-mobile" title="Logout">Sign Out</a>
+                <a href="index.php?route=logout" class="btn btn-secondary btn-sm header-signout-btn" title="Sign Out">Sign Out</a>
             </div>
         </header>
 
-        <!-- Browser Zoom Notice Banner (Displays automatically if browser zoom is less than 1.0) -->
-        <div id="zoomAlertBanner" class="zoom-alert-banner" style="display: none;">
-            <div class="zoom-alert-content">
-                <span class="zoom-alert-icon">🔍</span>
-                <div class="zoom-alert-text">
-                    <strong>Display Scale Notice:</strong> Your browser zoom appears reduced or page feels small. Press <kbd>Ctrl</kbd> + <kbd>0</kbd> in Chrome to reset browser zoom to 100%, or click <strong>Auto-Fit</strong> in the top bar.
-                </div>
-            </div>
-            <div class="zoom-alert-actions">
-                <button type="button" class="btn btn-sm btn-primary" onclick="setAppScale('auto'); dismissZoomAlert();">Auto-Fit Now</button>
-                <button type="button" class="zoom-alert-close" onclick="dismissZoomAlert()" aria-label="Dismiss">&times;</button>
-            </div>
-        </div>
-
         <script>
+        // Clean any leftover zoom styles or storage
+        try {
+            document.body.style.zoom = '1';
+            localStorage.removeItem('msec_desktop_scale');
+        } catch(e) {}
+
         function toggleNotifPanel() {
             const panel = document.getElementById('notifPanel');
             panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
@@ -261,71 +243,6 @@ $recentNotifications = Notification::getForUser($user['id'] ?? 0, $currentRole, 
             if (wrap && !wrap.contains(e.target)) {
                 const panel = document.getElementById('notifPanel');
                 if (panel) panel.style.display = 'none';
-            }
-        });
-
-        // Smart Universal Display Scale Controller (Auto-Fit for PC, Laptop & Windows DPI)
-        function setAppScale(scale) {
-            localStorage.setItem('msec_desktop_scale', scale);
-            applyAppScale(scale);
-        }
-
-        function applyAppScale(scale) {
-            document.querySelectorAll('.zoom-btn').forEach(btn => btn.classList.remove('active'));
-
-            if (scale === 'auto') {
-                const autoBtn = document.getElementById('zoomAuto');
-                if (autoBtn) autoBtn.classList.add('active');
-                
-                const width = window.innerWidth;
-                const dpr = window.devicePixelRatio || 1;
-                
-                let factor = 1.0;
-                // If large desktop screen (>= 1750px) and standard 100% Windows scaling:
-                if (width >= 1750 && dpr <= 1.05) {
-                    factor = 1.15;
-                } else if (width <= 1280 || dpr >= 1.25) {
-                    // On laptops or when Windows DPI is already 125%/150%, keep 1.0 to prevent double-scaling
-                    factor = 1.0;
-                } else {
-                    factor = 1.05;
-                }
-                
-                document.documentElement.style.setProperty('--desktop-zoom', factor.toFixed(2));
-                document.body.style.zoom = factor;
-            } else {
-                const factor = (parseFloat(scale) / 100).toFixed(2);
-                document.documentElement.style.setProperty('--desktop-zoom', factor);
-                document.body.style.zoom = factor;
-                
-                const activeBtn = document.getElementById('zoom' + scale);
-                if (activeBtn) activeBtn.classList.add('active');
-            }
-        }
-
-        // Auto-recalculate on window resize if in auto mode
-        window.addEventListener('resize', function() {
-            const savedScale = localStorage.getItem('msec_desktop_scale') || 'auto';
-            if (savedScale === 'auto') {
-                applyAppScale('auto');
-            }
-        });
-
-        function dismissZoomAlert() {
-            sessionStorage.setItem('dismiss_zoom_alert', '1');
-            const alertEl = document.getElementById('zoomAlertBanner');
-            if (alertEl) alertEl.style.display = 'none';
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedScale = localStorage.getItem('msec_desktop_scale') || 'auto';
-            applyAppScale(savedScale);
-
-            // Detect if browser itself is zoomed out (DPR < 0.90 on desktop width)
-            const dpr = window.devicePixelRatio || 1;
-            if (dpr < 0.90 && window.innerWidth >= 1024 && !sessionStorage.getItem('dismiss_zoom_alert')) {
-                const alertEl = document.getElementById('zoomAlertBanner');
-                if (alertEl) alertEl.style.display = 'flex';
             }
         });
         </script>

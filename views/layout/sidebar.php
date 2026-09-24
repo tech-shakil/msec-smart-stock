@@ -47,6 +47,40 @@ $showAdminSection = $canMasters || $canUsers || $canSecurity || $canAudit || $ca
         <div class="role-pill-dept"><?= htmlspecialchars($user['dept_name'] ?? 'Kilakarai Campus') ?></div>
     </div>
 
+    <!-- Mobile Role Simulator Switcher -->
+    <div class="sidebar-mobile-role-switcher hide-desktop">
+        <form method="GET" action="index.php" id="sidebarPersonaForm">
+            <input type="hidden" name="route" value="<?= htmlspecialchars($_GET['route'] ?? 'dashboard') ?>">
+            <label style="font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 4px;">🎭 Switch Role Persona:</label>
+            <select name="switch_role" class="form-control" style="background: rgba(255,255,255,0.08); color: #f1f5f9; border-color: rgba(255,255,255,0.15); font-size: 12px; padding: 6px 10px; border-radius: 6px; width: 100%;" onchange="document.getElementById('sidebarPersonaForm').submit();">
+                <optgroup label="🏛️ Executive">
+                    <option value="super_admin" <?= $currentRole === 'super_admin' ? 'selected' : '' ?>>Super Admin</option>
+                    <option value="director" <?= $currentRole === 'director' ? 'selected' : '' ?>>Director</option>
+                    <option value="principal" <?= $currentRole === 'principal' ? 'selected' : '' ?>>Principal</option>
+                    <option value="vice_principal" <?= $currentRole === 'vice_principal' ? 'selected' : '' ?>>Vice Principal</option>
+                    <option value="management_viewer" <?= $currentRole === 'management_viewer' ? 'selected' : '' ?>>Management</option>
+                </optgroup>
+                <optgroup label="📦 Central Stores">
+                    <option value="store_keeper" <?= $currentRole === 'store_keeper' ? 'selected' : '' ?>>Store Keeper</option>
+                    <option value="purchase_officer" <?= $currentRole === 'purchase_officer' ? 'selected' : '' ?>>Purchase Officer</option>
+                    <option value="accounts_officer" <?= $currentRole === 'accounts_officer' ? 'selected' : '' ?>>Accounts Officer</option>
+                </optgroup>
+                <optgroup label="🏢 Department">
+                    <option value="hod" <?= $currentRole === 'hod' ? 'selected' : '' ?>>HOD CSE</option>
+                    <option value="dept_coordinator" <?= $currentRole === 'dept_coordinator' ? 'selected' : '' ?>>Coordinator</option>
+                    <option value="lab_incharge" <?= $currentRole === 'lab_incharge' ? 'selected' : '' ?>>Lab Incharge</option>
+                </optgroup>
+                <optgroup label="👤 Academic">
+                    <option value="faculty" <?= $currentRole === 'faculty' ? 'selected' : '' ?>>Faculty</option>
+                    <option value="technician" <?= $currentRole === 'technician' ? 'selected' : '' ?>>Technician</option>
+                </optgroup>
+                <optgroup label="🛡️ Audit">
+                    <option value="auditor" <?= $currentRole === 'auditor' ? 'selected' : '' ?>>Auditor</option>
+                </optgroup>
+            </select>
+        </form>
+    </div>
+
     <nav class="sidebar-nav">
         <div class="nav-label">Core Operations</div>
         

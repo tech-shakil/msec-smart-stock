@@ -161,12 +161,13 @@ MSEC Smart Stock implements a fluid, device-agnostic responsive layout engine en
    - Adaptive Sidebar: Scales between `240px` (on 1366px compact laptops) and `275px` (on 1920px+ desktop PCs) to maximize data workspace.
    - Adaptive Padding: Viewport padding fluidly adjusts from `16px` to `36px` to prevent wasted margins.
 
-2. **Windows DPI Scaling Normalization**:
-   - Automatically inspects `window.devicePixelRatio` and viewport width.
-   - On Windows laptops with 125% or 150% display scaling enabled (common in 14"–15.6" 1080p and 4K displays), the engine normalizes zoom to `1.0` to avoid artificial double-scaling and prevent horizontal scrollbars.
-   - On large widescreen desktop monitors ($\ge 1800px$) with native 100% DPI, Auto-Fit applies a comfortable `1.15` magnification factor for bold, authoritative ERP viewing.
+2. **Windows DPI Scaling & Natural Viewport Containment**:
+   - Zero artificial zoom or scale factors applied; relies on 100% native fluid layout with `min-width: 0; max-width: 100vw;` containment.
+   - On Windows laptops with 125% or 150% display scaling enabled, text and components flex fluidly without any horizontal window overflow.
+   - Responsive breakpoints at 1280px, 1180px, 1024px, 768px, and 480px ensure every element remains fully within the viewport.
 
 3. **Smart Header & Grid Resilience**:
-   - Zero-wrap header layout ensures brand titles, institutional subheaders, notification bells, scale controllers, and persona selectors stay on a single line.
-   - `.responsive-split-grid` displays 2 columns on wide monitors ($\ge 1280px$) and seamlessly transitions to single-column on smaller laptop screens without column clipping.
+   - Adaptive header dynamically truncates location text and persona controls on compact laptops, preventing the right side (profile and Sign Out) from overflowing.
+   - `.responsive-split-grid` displays 2 columns on monitors ($\ge 1180px$) and seamlessly transitions to single-column on compact laptops and tablets without column clipping.
+   - All data tables are housed in `.data-table-container` with smooth internal horizontal swiping on mobile, completely preventing window-level scrollbars.
 

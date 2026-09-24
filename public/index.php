@@ -44,9 +44,6 @@ if (isset($_GET['switch_role']) && !empty($_GET['switch_role'])) {
         $_SESSION['msec_user'] = $u;
         AuditLogger::log('DEMO_ROLE_SWITCHED', 'Authentication', "Reviewer switched persona to {$u['username']} ({$targetRole})", 'User', $u['id'], null, null, $u['id'], $targetRole);
     }
-    $redirectRoute = $_GET['route'] ?? 'dashboard';
-    header("Location: index.php?route={$redirectRoute}");
-    exit;
 }
 
 $route = $_GET['route'] ?? 'dashboard';
