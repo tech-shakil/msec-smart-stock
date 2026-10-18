@@ -17,74 +17,45 @@ class ApprovalEngine {
     public static function initializeWorkflow(int $requestId, float $totalValue, string $requestType = 'NEW_PURCHASE'): void {
         $pdo = Database::getInstance();
 
-        // Stage 1: Department Stock Coordinator
+        // Institutional Governance Workflow Hierarchy:
+        // HOD endorses departmental indents without autonomous sanction power.
+        // Requisitions flow through VP and Principal, with final financial sanction authorized by Management (Director).
         $levels = [
             [
                 'level' => 1,
                 'title' => 'Department Coordinator Need & Technical Verification',
                 'role'  => 'dept_coordinator'
             ],
-            // Stage 2: Head of Department (HOD)
             [
                 'level' => 2,
-                'title' => 'Head of Department (HOD) Authorization',
+                'title' => 'Head of Department (HOD) Indent Endorsement',
                 'role'  => 'hod'
             ],
-            // Stage 3: Store Keeper Operational Verification Gate (MANDATORY FOR ALL)
             [
                 'level' => 3,
                 'title' => 'Central Store Keeper Operational Gate & Approval Sheet Verification',
                 'role'  => 'store_keeper'
-            ]
-        ];
-
-        // Higher sanction tiers based on estimated monetary value
-        if ($totalValue <= 5000) {
-            // Below ₹5,000: Operational sanction at Store Keeper / HOD level
-            // Level 3 Store Keeper verification suffices for operational issue
-        } elseif ($totalValue <= 25000) {
-            // ₹5,001 - ₹25,000: Vice Principal Administrative Approval
-            $levels[] = [
+            ],
+            [
                 'level' => 4,
-                'title' => 'Vice Principal Administrative Sanction',
+                'title' => 'Vice Principal Administrative Review & Concurrence',
                 'role'  => 'vice_principal'
-            ];
-        } elseif ($totalValue <= 100000) {
-            // ₹25,001 - ₹1,00,000: Vice Principal + Principal High-Value Sanction
-            $levels[] = [
-                'level' => 4,
-                'title' => 'Vice Principal Administrative Concurrence',
-                'role'  => 'vice_principal'
-            ];
-            $levels[] = [
+            ],
+            [
                 'level' => 5,
-                'title' => 'Principal Institutional Sanction',
+                'title' => 'Principal Institutional Academic Review & Recommendation',
                 'role'  => 'principal'
-            ];
-        } else {
-            // Above ₹1,00,000: Vice Principal + Principal + Director Major Capital Sanction
-            $levels[] = [
-                'level' => 4,
-                'title' => 'Vice Principal Administrative Concurrence',
-                'role'  => 'vice_principal'
-            ];
-            $levels[] = [
-                'level' => 5,
-                'title' => 'Principal Institutional Sanction',
-                'role'  => 'principal'
-            ];
-            $levels[] = [
+            ],
+            [
                 'level' => 6,
-                'title' => 'Director Capital Procurement Sanction',
+                'title' => 'Director / Management Final Financial Sanction & Allocation',
                 'role'  => 'director'
-            ];
-        }
-
-        // Final fulfillment step: Central Store Keeper Issue
-        $levels[] = [
-            'level' => count($levels) + 1,
-            'title' => 'Central Store Keeper Material Fulfillment & Distribution',
-            'role'  => 'store_keeper'
+            ],
+            [
+                'level' => 7,
+                'title' => 'Central Store Keeper Material Fulfillment & Distribution',
+                'role'  => 'store_keeper'
+            ]
         ];
 
         $stmt = $pdo->prepare("
@@ -147,9 +118,9 @@ class ApprovalEngine {
                 // Determine intermediate request status based on next stage
                 $nextStatus = match ($nextApproval['approver_role']) {
                     'hod'              => 'HOD_REVIEW',
-                    'store_keeper'     => 'STORE_REVIEW',
-                    'vice_principal',
-                    'principal',
+                    'store_keeper'     => ($nextApproval['level_number'] == 3) ? 'STORE_REVIEW' : 'STORE_FULFILLMENT',
+                    'vice_principal'   => 'VP_REVIEW',
+                    'principal'        => 'PRINCIPAL_REVIEW',
                     'director'         => 'MANAGEMENT_APPROVAL',
                     default            => 'Pending Approval'
                 };

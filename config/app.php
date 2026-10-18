@@ -33,18 +33,18 @@ const ROLES = [
     'hod'                 => ['name' => 'HOD',                         'level' => 'Department'],
     'dept_coordinator'    => ['name' => 'Department Stock Coordinator','level' => 'Department'],
     'lab_incharge'        => ['name' => 'Lab Incharge',                'level' => 'Laboratory'],
-    'faculty'             => ['name' => 'Faculty',                     'level' => 'User'],
     'technician'          => ['name' => 'Technician',                  'level' => 'User'],
     'auditor'             => ['name' => 'Auditor',                     'level' => 'Read Only'],
     'management_viewer'   => ['name' => 'Management Viewer',           'level' => 'Read Only']
 ];
 
-// Approval Thresholds (Section 11.1)
+// Institutional Approval Workflow (Section 11.1)
+// Note: HOD endorses departmental indents. All requisitions are reviewed by VP/Principal,
+// and ultimate financial sanction is granted exclusively by Management (Directorate).
 const APPROVAL_THRESHOLDS = [
-    'TIER_LOW'      => 5000,       // Below 5,000: HOD + Store Keeper
-    'TIER_MID'      => 25000,      // 5,001 - 25,000: HOD + Vice Principal
-    'TIER_HIGH'     => 100000,     // 25,001 - 1,00,000: HOD + Vice Principal + Principal
-    // Above 1,00,000: HOD + Vice Principal + Principal + Director
+    'OPERATIONAL_REVIEW'   => 5000,       // Department coordinator & HOD endorsement check
+    'ADMINISTRATIVE_REVIEW'=> 25000,      // Vice Principal administrative review threshold
+    'INSTITUTIONAL_SANCTION'=> 25001,     // Principal review & Management Directorate sanction
 ];
 
 // Asset Statuses (Section 18.2)

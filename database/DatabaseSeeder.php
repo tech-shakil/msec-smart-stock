@@ -472,24 +472,38 @@ class DatabaseSeeder {
         $pdo->exec("INSERT INTO organizations (id, code, name, address, phone, email, established_year) VALUES
             (1, 'MSEC', 'Mohamed Sathak Engineering College', 'Kilakarai - 623 806, Ramanathapuram Dist., Tamil Nadu', '+91 4567 241327', 'stock@msec.org.in', 1984)");
 
-        // Departments
+        // Departments (All Academic & Central Departments)
         $pdo->exec("INSERT INTO departments (id, org_id, code, name) VALUES
             (1, 1, 'CSE', 'Computer Science & Engineering'),
             (2, 1, 'ECE', 'Electronics & Communication Engineering'),
             (3, 1, 'EEE', 'Electrical & Electronics Engineering'),
             (4, 1, 'MECH', 'Mechanical Engineering'),
             (5, 1, 'CIVIL', 'Civil Engineering'),
-            (6, 1, 'ADMIN_DEPT', 'Central College Administration')");
+            (6, 1, 'ADMIN_DEPT', 'Central College Administration'),
+            (7, 1, 'IT', 'Information Technology'),
+            (8, 1, 'AIDS', 'Artificial Intelligence & Data Science'),
+            (9, 1, 'CHEM', 'Chemical Engineering'),
+            (10, 1, 'MARINE', 'Marine Engineering'),
+            (11, 1, 'SH', 'Science & Humanities'),
+            (12, 1, 'MBA', 'Master of Business Administration'),
+            (13, 1, 'MCA', 'Master of Computer Applications'),
+            (14, 1, 'LIB', 'Central Dr. Zakir Husain Library'),
+            (15, 1, 'INCUBATION', 'MSEC Incubation & Innovation Center'),
+            (16, 1, 'EXAM', 'Office of the Controller of Examinations (COE)'),
+            (17, 1, 'PHYS', 'Physical Education & Sports Department')");
 
-        // Laboratories
+        // Laboratories & Facilities
         $pdo->exec("INSERT INTO laboratories (id, dept_id, code, name, location) VALUES
-            (1, 1, 'CSE-PROG', 'Programming Lab', 'Main Block - Floor 2 - Lab 201'),
-            (2, 1, 'CSE-AI', 'AI & Deep Learning Lab', 'Main Block - Floor 3 - Lab 304'),
-            (3, 1, 'CSE-NET', 'Network & Security Lab', 'Main Block - Floor 2 - Lab 205'),
-            (4, 1, 'CSE-OFF', 'Department Office', 'Main Block - Floor 2 - CSE HOD Suite'),
+            (1, 1, 'CSE-LINUX', 'Linux Laboratory', 'Main Block - Floor 2 - Lab 201'),
+            (2, 1, 'CSE-CASE', 'CASE Tools Laboratory', 'Main Block - Floor 3 - Lab 304'),
+            (3, 1, 'CSE-ANDROID', 'Android Laboratory', 'Main Block - Floor 2 - Lab 205'),
             (5, 2, 'ECE-COMM', 'Communication Systems Lab', 'Science Block - Floor 1 - Lab 102'),
             (6, 3, 'EEE-POW', 'Power Electronics Lab', 'Science Block - Floor 2 - Lab 201'),
-            (7, 4, 'MECH-CAD', 'CAD / CAM Automation Center', 'Workshop Block - Floor 1 - Lab 101')");
+            (7, 4, 'MECH-CAD', 'CAD / CAM Automation Center', 'Workshop Block - Floor 1 - Lab 101'),
+            (8, 14, 'LIB-MAIN', 'Central Library Reading & Book Stacks', 'Library Block - Ground Floor'),
+            (9, 14, 'LIB-DIGI', 'Digital Library & Online Resource Center', 'Library Block - Floor 1 - Lab 101'),
+            (10, 15, 'INC-MAKER', 'MSEC Incubation & Makerspace Center', 'Tech Park - Floor 1 - Bay A'),
+            (11, 15, 'INC-IOT', 'IoT Prototyping & Hardware Testing Lab', 'Tech Park - Floor 1 - Lab 102')");
 
         // Stores
         $pdo->exec("INSERT INTO stores (id, code, name, type, dept_id, keeper_user_id) VALUES
@@ -509,7 +523,7 @@ class DatabaseSeeder {
         // Default password hash for 'password123'
         $passHash = password_hash('password123', PASSWORD_BCRYPT);
 
-        // 14 Institutional Users across all Roles
+        // Institutional Users across all Roles
         $users = [
             [1, 'superadmin', $passHash, 'Engr. M. Shakil (System Admin)', 'admin@msec.edu.in', '+91 9876543210', 'EMP-SYS-001', 'Chief System Administrator', 'super_admin', 6, null],
             [2, 'director', $passHash, 'Dr. K. S. Babai', 'director@msec.edu.in', '+91 9876543211', 'EMP-DIR-001', 'Director (Trust Governance)', 'director', 6, null],
@@ -519,12 +533,51 @@ class DatabaseSeeder {
             [6, 'storekeeper', $passHash, 'K. Ramasamy', 'store@msec.edu.in', '+91 9876543215', 'EMP-STR-001', 'Central Store Keeper (Gateway)', 'store_keeper', 6, null],
             [7, 'purchaseofficer', $passHash, 'P. Natarajan', 'purchase@msec.edu.in', '+91 9876543216', 'EMP-PUR-001', 'Procurement & Purchase Officer', 'purchase_officer', 6, null],
             [8, 'accountsofficer', $passHash, 'A. Mohamed Hameed', 'accounts@msec.edu.in', '+91 9876543217', 'EMP-ACC-001', 'Chief Accounts Officer', 'accounts_officer', 6, null],
-            [9, 'hod_cse', $passHash, 'Dr. A. Chandrasekar', 'hod.cse@msec.edu.in', '+91 9876543218', 'EMP-CSE-001', 'Professor & Head (CSE)', 'hod', 1, null],
-            [10, 'coord_cse', $passHash, 'Prof. M. Vijay', 'coord.cse@msec.edu.in', '+91 9876543220', 'EMP-CSE-005', 'Asst. Professor & Stock Coordinator', 'dept_coordinator', 1, null],
-            [11, 'lab_ai', $passHash, 'Er. R. Ramesh', 'lab.ai@msec.edu.in', '+91 9876543221', 'EMP-LAB-002', 'Lab Incharge (AI & ML Lab)', 'lab_incharge', 1, 2],
-            [12, 'faculty_cse', $passHash, 'Dr. S. Anitha', 'faculty.cse@msec.edu.in', '+91 9876543222', 'EMP-FAC-012', 'Associate Professor (CSE)', 'faculty', 1, null],
+            [9, 'hod_cse', $passHash, 'Mr. N. Balasubramanian', 'csehod@msec.org.in', '+91 94431 12345', 'EMP-CSE-001', 'Associate Professor & Head of Department (CSE)', 'hod', 1, null],
+            [10, 'coord_cse', $passHash, 'Mr. K. Seeni Pulavar Pitchai', 'seenipulavar2025@gmail.com', '+91 98421 67890', 'EMP-CSE-002', 'Assistant Professor & Department Stock Coordinator', 'dept_coordinator', 1, null],
+            [11, 'merlin_rithika', $passHash, 'Ms. M.K. Merlin Rithika', 'merlinrithika21@gmail.com', '+91 97890 12345', 'EMP-CSE-003', 'Assistant Professor & Lab In-charge (Linux & CASE Tools)', 'lab_incharge', 1, 1],
             [13, 'tech_cse', $passHash, 'T. Murugan', 'tech.cse@msec.edu.in', '+91 9876543223', 'EMP-TEC-003', 'Senior Maintenance Technician', 'technician', 1, 1],
-            [14, 'auditor', $passHash, 'CMA S. Narayanan', 'audit@msec.edu.in', '+91 9876543224', 'EMP-AUD-001', 'Statutory Internal Auditor', 'auditor', 6, null]
+            [14, 'auditor', $passHash, 'CMA S. Narayanan', 'audit@msec.edu.in', '+91 9876543224', 'EMP-AUD-001', 'Statutory Internal Auditor', 'auditor', 6, null],
+            [15, 'mangala_jothi', $passHash, 'Ms. C. Mangala Jothi', 'Jothichandran1994@gmail.com', '+91 98940 54321', 'EMP-CSE-004', 'Assistant Professor & Lab In-charge (Android)', 'lab_incharge', 1, 3],
+
+            // IT Department (Dept 7)
+            [16, 'hod_it', $passHash, 'Dr. K. Karthikeyan', 'ithod@msec.org.in', '+91 94431 23456', 'EMP-IT-001', 'Associate Professor & Head of Department (IT)', 'hod', 7, null],
+            [17, 'coord_it', $passHash, 'Er. M. Naveen Kumar', 'itcoord@msec.org.in', '+91 98421 23456', 'EMP-IT-002', 'Assistant Professor & IT Stock Coordinator', 'dept_coordinator', 7, null],
+            [18, 'incharge_it', $passHash, 'Mrs. P. Priya', 'itlab@msec.org.in', '+91 97890 23456', 'EMP-IT-003', 'Assistant Professor & Lab In-charge (Network Security)', 'lab_incharge', 7, 12],
+
+            // AI & Data Science (Dept 8)
+            [19, 'hod_aids', $passHash, 'Dr. V. Senthil Murugan', 'aidshod@msec.org.in', '+91 94431 34567', 'EMP-AIDS-001', 'Associate Professor & Head of Department (AI&DS)', 'hod', 8, null],
+            [20, 'coord_aids', $passHash, 'Er. R. Vignesh', 'aidscoord@msec.org.in', '+91 98421 34567', 'EMP-AIDS-002', 'Assistant Professor & AI&DS Stock Coordinator', 'dept_coordinator', 8, null],
+            [21, 'incharge_aids', $passHash, 'Mr. S. Dinesh', 'aidslab@msec.org.in', '+91 97890 34567', 'EMP-AIDS-003', 'Assistant Professor & Lab In-charge (Deep Learning)', 'lab_incharge', 8, 13],
+
+            // ECE Department (Dept 2)
+            [22, 'hod_ece', $passHash, 'Dr. S. Syed Abuthahir', 'ecehod@msec.org.in', '+91 94431 45678', 'EMP-ECE-001', 'Professor & Head of Department (ECE)', 'hod', 2, null],
+            [23, 'coord_ece', $passHash, 'Er. K. Ramesh', 'ececoord@msec.org.in', '+91 98421 45678', 'EMP-ECE-002', 'Assistant Professor & ECE Stock Coordinator', 'dept_coordinator', 2, null],
+            [24, 'incharge_ece', $passHash, 'Mrs. M. Kavitha', 'ecelab@msec.org.in', '+91 97890 45678', 'EMP-ECE-003', 'Assistant Professor & Lab In-charge (Comm Systems)', 'lab_incharge', 2, 5],
+
+            // EEE Department (Dept 3)
+            [25, 'hod_eee', $passHash, 'Dr. A. Raja', 'eeehod@msec.org.in', '+91 94431 56789', 'EMP-EEE-001', 'Professor & Head of Department (EEE)', 'hod', 3, null],
+            [26, 'coord_eee', $passHash, 'Er. S. Manikandan', 'eeecoord@msec.org.in', '+91 98421 56789', 'EMP-EEE-002', 'Assistant Professor & EEE Stock Coordinator', 'dept_coordinator', 3, null],
+            [27, 'incharge_eee', $passHash, 'Mr. B. Suresh', 'eeelab@msec.org.in', '+91 97890 56789', 'EMP-EEE-003', 'Assistant Professor & Lab In-charge (Power Electronics)', 'lab_incharge', 3, 6],
+
+            // MECH Department (Dept 4)
+            [28, 'hod_mech', $passHash, 'Dr. M. Ganesan', 'mechhod@msec.org.in', '+91 94431 67890', 'EMP-MECH-001', 'Professor & Head of Department (MECH)', 'hod', 4, null],
+            [29, 'coord_mech', $passHash, 'Er. P. Vijayakumar', 'mechcoord@msec.org.in', '+91 98421 67890', 'EMP-MECH-002', 'Assistant Professor & MECH Stock Coordinator', 'dept_coordinator', 4, null],
+            [30, 'incharge_mech', $passHash, 'Mr. R. Anand', 'mechlab@msec.org.in', '+91 97890 67890', 'EMP-MECH-003', 'Assistant Professor & Lab In-charge (CAD/CAM Center)', 'lab_incharge', 4, 7],
+
+            // CIVIL Department (Dept 5)
+            [31, 'hod_civil', $passHash, 'Dr. R. Subramanian', 'civilhod@msec.org.in', '+91 94431 78901', 'EMP-CIV-001', 'Professor & Head of Department (CIVIL)', 'hod', 5, null],
+            [32, 'coord_civil', $passHash, 'Er. G. Selvaraj', 'civilcoord@msec.org.in', '+91 98421 78901', 'EMP-CIV-002', 'Assistant Professor & CIVIL Stock Coordinator', 'dept_coordinator', 5, null],
+            [33, 'incharge_civil', $passHash, 'Mr. K. Rajesh', 'civillab@msec.org.in', '+91 97890 78901', 'EMP-CIV-003', 'Assistant Professor & Lab In-charge (Materials Lab)', 'lab_incharge', 5, null],
+
+            // Central Library (Dept 14)
+            [34, 'chief_librarian', $passHash, 'Dr. N. Mohamed Ismail', 'librarian@msec.edu.in', '+91 94431 89012', 'EMP-LIB-001', 'Chief Librarian & Head of Central Library', 'hod', 14, 8],
+            [35, 'lib_incharge', $passHash, 'Mrs. J. Fathima', 'library@msec.edu.in', '+91 98421 89012', 'EMP-LIB-002', 'Assistant Librarian (Circulation & Issues)', 'lab_incharge', 14, 8],
+            [36, 'digitallib_incharge', $passHash, 'Mr. A. Sikkandar', 'digitallib@msec.edu.in', '+91 97890 89012', 'EMP-LIB-003', 'Digital Resource In-charge (120 Terminals)', 'lab_incharge', 14, 9],
+
+            // MSEC Incubation & Innovation Hub (Dept 15)
+            [37, 'incubation_head', $passHash, 'Dr. T. Sheikh Fakrudeen', 'incubation@msec.edu.in', '+91 94431 90123', 'EMP-INC-001', 'Director (Incubation & EDII Hub)', 'hod', 15, 10],
+            [38, 'maker_incharge', $passHash, 'Er. K. Mohamed Rifath', 'maker@msec.edu.in', '+91 98421 90123', 'EMP-INC-002', 'IoT & Makerspace Lab In-charge', 'lab_incharge', 15, 11]
         ];
 
         $stmtUser = $pdo->prepare("INSERT INTO users (id, username, password_hash, full_name, email, phone, employee_id, designation, role_key, dept_id, lab_id, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active')");
@@ -682,9 +735,9 @@ class DatabaseSeeder {
             ('ACADEMIC_YEAR', '2026-2027', 'Academic', 'Active academic session'),
             ('FINANCIAL_YEAR', '2026-2027', 'Financial', 'Active financial year'),
             ('CURRENCY_CODE', 'INR', 'Financial', 'Indian Rupee symbol ₹'),
-            ('TIER_LOW_LIMIT', '5000', 'Workflow', 'Store Keeper / HOD operational sanction threshold'),
-            ('TIER_MID_LIMIT', '25000', 'Workflow', 'Vice Principal administrative sanction threshold'),
-            ('TIER_HIGH_LIMIT', '100000', 'Workflow', 'Principal institutional sanction threshold'),
+            ('TIER_LOW_LIMIT', '5000', 'Workflow', 'Department technical review & preliminary store verification threshold'),
+            ('TIER_MID_LIMIT', '25000', 'Workflow', 'Vice Principal administrative review & concurrence threshold'),
+            ('TIER_HIGH_LIMIT', '100000', 'Workflow', 'Principal institutional recommendation & Management sanction review'),
             ('MAX_FAILED_LOGINS', '5', 'Security', 'Consecutive failed logins before auto-lock'),
             ('FORGOT_PASSWORD_POLICY', 'ADMIN_ONLY', 'Security', 'Strict institutional policy: Contact System Admin for password reset')");
     }

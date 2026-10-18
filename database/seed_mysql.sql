@@ -8,22 +8,32 @@ INSERT INTO organizations (id, code, name, address, phone, email, established_ye
 (1, 'MSEC', 'Mohamed Sathak Engineering College', 'Kilakarai - 623 806, Ramanathapuram Dist., Tamil Nadu', '+91 4567 241327', 'stock@msec.org.in', 1984)
 ON DUPLICATE KEY UPDATE name=VALUES(name);
 
--- Departments
+-- Departments (Complete Institutional Registry)
 INSERT INTO departments (id, org_id, code, name) VALUES
 (1, 1, 'CSE', 'Computer Science & Engineering'),
 (2, 1, 'ECE', 'Electronics & Communication Engineering'),
 (3, 1, 'EEE', 'Electrical & Electronics Engineering'),
 (4, 1, 'MECH', 'Mechanical Engineering'),
 (5, 1, 'CIVIL', 'Civil Engineering'),
-(6, 1, 'ADMIN_DEPT', 'Central Administration')
+(6, 1, 'ADMIN_DEPT', 'Central Administration'),
+(7, 1, 'IT', 'Information Technology'),
+(8, 1, 'AIDS', 'Artificial Intelligence & Data Science'),
+(9, 1, 'CHEM', 'Chemical Engineering'),
+(10, 1, 'MARINE', 'Marine Engineering'),
+(11, 1, 'SH', 'Science & Humanities'),
+(12, 1, 'MBA', 'Master of Business Administration'),
+(13, 1, 'MCA', 'Master of Computer Applications'),
+(14, 1, 'LIB', 'Central Dr. Zakir Husain Library'),
+(15, 1, 'INCUBATION', 'MSEC Incubation & Innovation Center'),
+(16, 1, 'EXAM', 'Office of the Controller of Examinations (COE)'),
+(17, 1, 'PHYS', 'Physical Education & Sports Department')
 ON DUPLICATE KEY UPDATE name=VALUES(name);
 
 -- Laboratories (Section 9 & 11)
 INSERT INTO laboratories (id, dept_id, code, name, location) VALUES
-(1, 1, 'CSE-PROG', 'Programming Lab', 'Main Block - Floor 2 - Lab 201'),
-(2, 1, 'CSE-AI', 'AI Lab', 'Main Block - Floor 3 - Lab 304'),
-(3, 1, 'CSE-NET', 'Network Lab', 'Main Block - Floor 2 - Lab 205'),
-(4, 1, 'CSE-OFF', 'Department Office', 'Main Block - Floor 2 - CSE HOD Suite'),
+(1, 1, 'CSE-LINUX', 'Linux Laboratory', 'Main Block - Floor 2 - Lab 201'),
+(2, 1, 'CSE-CASE', 'CASE Tools Laboratory', 'Main Block - Floor 3 - Lab 304'),
+(3, 1, 'CSE-ANDROID', 'Android Laboratory', 'Main Block - Floor 2 - Lab 205'),
 (5, 2, 'ECE-COMM', 'Communication Systems Lab', 'Science Block - Floor 1 - Lab 102'),
 (6, 3, 'EEE-POW', 'Power Electronics Lab', 'Science Block - Floor 2 - Lab 201'),
 (7, 4, 'MECH-CAD', 'CAD/CAM Lab', 'Workshop Block - Floor 1 - Lab 101')
@@ -42,7 +52,6 @@ INSERT INTO roles (role_key, name, level, description) VALUES
 ('hod', 'HOD', 'Department', 'Department stock approval and quota management'),
 ('dept_coordinator', 'Department Stock Coordinator', 'Department', 'Department inventory control'),
 ('lab_incharge', 'Lab Incharge', 'Laboratory', 'Lab equipment, consumable requisitions and safety'),
-('faculty', 'Faculty', 'User', 'Raise stock requests and indents'),
 ('technician', 'Technician', 'User', 'Lab maintenance and stock usage tracking'),
 ('auditor', 'Auditor', 'Read Only', 'Audit verification and variance inspection'),
 ('management_viewer', 'Management Viewer', 'Read Only', 'Read-only dashboard monitoring')
@@ -59,14 +68,14 @@ INSERT INTO users (id, username, password_hash, full_name, email, phone, role_ke
 (6, 'storekeeper', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'K. Ramasamy (Central Store Keeper)', 'store@msec.edu.in', '+91 9876543215', 'store_keeper', 6, NULL, 'Active'),
 (7, 'purchaseofficer', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'P. Natarajan (Purchase Officer)', 'purchase@msec.edu.in', '+91 9876543216', 'purchase_officer', 6, NULL, 'Active'),
 (8, 'accountsofficer', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'A. Mohamed Hameed (Accounts Officer)', 'accounts@msec.org.in', '+91 9876543217', 'accounts_officer', 6, NULL, 'Active'),
-(9, 'hod_cse', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'Dr. A. Chandrasekar (HOD CSE)', 'hod.cse@msec.edu.in', '+91 9876543218', 'hod', 1, NULL, 'Active'),
+(9, 'hod_cse', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'Mr. N. Balasubramanian (HOD CSE)', 'csehod@msec.org.in', '+91 94431 12345', 'hod', 1, NULL, 'Active'),
 (10, 'hod_ece', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'Dr. G. Sumathi (HOD ECE)', 'hod.ece@msec.edu.in', '+91 9876543219', 'hod', 2, NULL, 'Active'),
-(11, 'coord_cse', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'Prof. M. Vijay (CSE Coordinator)', 'coord.cse@msec.edu.in', '+91 9876543220', 'dept_coordinator', 1, NULL, 'Active'),
-(12, 'lab_ai', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'Er. R. Ramesh (AI Lab Incharge)', 'lab.ai@msec.edu.in', '+91 9876543221', 'lab_incharge', 1, 2, 'Active'),
-(13, 'faculty_cse', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'Dr. S. Anitha (Faculty CSE)', 'faculty.cse@msec.edu.in', '+91 9876543222', 'faculty', 1, NULL, 'Active'),
+(11, 'coord_cse', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'Mr. K. Seeni Pulavar Pitchai (CSE Coordinator)', 'seenipulavar2025@gmail.com', '+91 98421 67890', 'dept_coordinator', 1, NULL, 'Active'),
+(12, 'merlin_rithika', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'Ms. M.K. Merlin Rithika (Linux & CASE Tools)', 'merlinrithika21@gmail.com', '+91 97890 12345', 'lab_incharge', 1, 1, 'Active'),
 (14, 'tech_cse', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'T. Murugan (Lab Technician)', 'tech.cse@msec.edu.in', '+91 9876543223', 'technician', 1, 1, 'Active'),
 (15, 'auditor', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'S. Narayanan (Internal Auditor)', 'audit@msec.edu.in', '+91 9876543224', 'auditor', 6, NULL, 'Active'),
-(16, 'viewer', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'Governing Body Observer', 'viewer@msec.edu.in', '+91 9876543225', 'management_viewer', 6, NULL, 'Active')
+(16, 'viewer', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'Governing Body Observer', 'viewer@msec.edu.in', '+91 9876543225', 'management_viewer', 6, NULL, 'Active'),
+(17, 'mangala_jothi', '$2y$10$wE16gX3eBup5yS90M5yv3OSYtQ2wVfB41bC17l4yJ5Xv5cW9Q0v3W', 'Ms. C. Mangala Jothi (Android Lab)', 'Jothichandran1994@gmail.com', '+91 98940 54321', 'lab_incharge', 1, 3, 'Active')
 ON DUPLICATE KEY UPDATE full_name=VALUES(full_name);
 
 -- Stores (Section 9)
@@ -141,12 +150,13 @@ ON DUPLICATE KEY UPDATE asset_tag=VALUES(asset_tag);
 
 -- Approval Workflows Configuration (Section 11.1 & 11.2)
 INSERT INTO approval_workflows (id, workflow_name, level_number, level_title, approver_role, min_value, max_value, condition_notes) VALUES
-(1, 'Tier 1 Standard Request', 1, 'Department Stock Coordinator', 'dept_coordinator', 0.00, 99999999.00, 'Initial department-level technical verification'),
-(2, 'Tier 1 Standard Request', 2, 'Head of Department (HOD)', 'hod', 0.00, 99999999.00, 'HOD approval required for all departmental requisitions'),
-(3, 'Tier 1 Standard Request', 3, 'Central Store Keeper', 'store_keeper', 0.00, 5000.00, 'Store keeper executes fulfillment for requests <= ₹5,000'),
-(4, 'Tier 2 Mid-Value Request', 3, 'Vice Principal', 'vice_principal', 5001.00, 99999999.00, 'VP approval required for requisitions exceeding ₹5,000'),
-(5, 'Tier 3 High-Value Request', 4, 'Principal', 'principal', 25001.00, 99999999.00, 'Principal approval mandatory for requisitions exceeding ₹25,000'),
-(6, 'Tier 4 Major Capital Request', 5, 'Director', 'director', 100001.00, 99999999.00, 'Director approval required for major procurement exceeding ₹1,00,000')
+(1, 'Institutional Procurement Workflow', 1, 'Department Stock Coordinator', 'dept_coordinator', 0.00, 99999999.00, 'Initial department-level technical and balance verification'),
+(2, 'Institutional Procurement Workflow', 2, 'Head of Department (HOD)', 'hod', 0.00, 99999999.00, 'HOD departmental endorsement for institutional review'),
+(3, 'Institutional Procurement Workflow', 3, 'Central Store Keeper', 'store_keeper', 0.00, 99999999.00, 'Store keeper stock verification & approval sheet generation'),
+(4, 'Institutional Procurement Workflow', 4, 'Vice Principal', 'vice_principal', 0.00, 99999999.00, 'Administrative review and concurrence'),
+(5, 'Institutional Procurement Workflow', 5, 'Principal', 'principal', 0.00, 99999999.00, 'Institutional academic review and recommendation to Management'),
+(6, 'Institutional Procurement Workflow', 6, 'Director / Management', 'director', 0.00, 99999999.00, 'Ultimate financial sanction and budget disbursement by Management'),
+(7, 'Institutional Procurement Workflow', 7, 'Central Store Keeper', 'store_keeper', 0.00, 99999999.00, 'Material fulfillment, PO generation, and physical issue')
 ON DUPLICATE KEY UPDATE level_title=VALUES(level_title);
 
 -- Vendors (Section 17)
