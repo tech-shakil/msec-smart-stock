@@ -42,7 +42,10 @@ $showAdminSection = $canMasters || $canUsers || $canSecurity || $canAudit || $ca
 
     <!-- Active Persona Quick-Info Badge -->
     <div class="sidebar-role-card">
-        <div class="role-pill-level"><?= htmlspecialchars($roleLevel) ?></div>
+        <div class="role-pill-level">
+            <span class="live-pulse-dot"></span>
+            <span><?= htmlspecialchars($roleLevel) ?></span>
+        </div>
         <div class="role-pill-title"><?= htmlspecialchars($roleName) ?></div>
         <div class="role-pill-dept"><?= htmlspecialchars($user['dept_name'] ?? 'Kilakarai Campus') ?></div>
     </div>
@@ -70,8 +73,7 @@ $showAdminSection = $canMasters || $canUsers || $canSecurity || $canAudit || $ca
                     <option value="dept_coordinator" <?= $currentRole === 'dept_coordinator' ? 'selected' : '' ?>>Coordinator</option>
                     <option value="lab_incharge" <?= $currentRole === 'lab_incharge' ? 'selected' : '' ?>>Lab Incharge</option>
                 </optgroup>
-                <optgroup label="👤 Academic">
-                    <option value="faculty" <?= $currentRole === 'faculty' ? 'selected' : '' ?>>Faculty</option>
+                <optgroup label="👤 Technical Staff">
                     <option value="technician" <?= $currentRole === 'technician' ? 'selected' : '' ?>>Technician</option>
                 </optgroup>
                 <optgroup label="🛡️ Audit">

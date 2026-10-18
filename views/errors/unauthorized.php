@@ -29,7 +29,7 @@ $roleLevel = ROLES[$currentRole]['level'] ?? 'User';
         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin: 24px 0; text-align: left; font-size: 13.5px;">
             <div style="font-weight: 700; color: #1e293b; margin-bottom: 8px;">Your Permitted Privileges:</div>
             <ul style="padding-left: 20px; color: #475569; line-height: 1.7;">
-                <?php if (in_array($currentRole, ['faculty', 'technician'])): ?>
+                <?php if (in_array($currentRole, ['technician'])): ?>
                     <li>Raise stock requisitions and indents for class & laboratory needs</li>
                     <li>Track status of your submitted indents and approval lifecycle</li>
                     <li>Inspect equipment and assets assigned to your department/lab</li>
