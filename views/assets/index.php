@@ -7,6 +7,9 @@
 $user = Auth::user();
 $statusFilter = $_GET['status'] ?? null;
 $assets = Asset::getAll(null, $statusFilter);
+$db = Database::getInstance();
+$allDepts = $db->query("SELECT * FROM departments ORDER BY name ASC")->fetchAll();
+$allLabs = $db->query("SELECT * FROM laboratories ORDER BY name ASC")->fetchAll();
 ?>
 
 <div class="page-header">
@@ -14,7 +17,12 @@ $assets = Asset::getAll(null, $statusFilter);
         <h2 class="page-title">IT Asset Tracking & Capital Equipment</h2>
         <div class="page-desc">Institutional Asset Register &bull; Hardware Config, MAC/IP, AMC & Lifecycle (Section 8 & 18)</div>
     </div>
-    <div>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <?php if (Auth::can('onboard_existing_item') || Auth::can('create_asset')): ?>
+            <button onclick="openModal('onboardExistingAssetModal')" class="btn btn-warning" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+                📦 Onboard Existing Equipment
+            </button>
+        <?php endif; ?>
         <?php if (Auth::can('create_asset')): ?>
             <button onclick="openModal('newAssetModal')" class="btn btn-primary">+ Register New Asset</button>
         <?php endif; ?>
@@ -268,5 +276,173 @@ function openServiceModal(id, name, tag) {
     document.getElementById('svc_asset_tag').innerText = tag;
     openModal('serviceModal');
 }
+</script>
+<?php endif; ?>
+
+<?php if (Auth::can('onboard_existing_item') || Auth::can('create_asset')): ?>
+<!-- Modal: Onboard Existing Laboratory Equipment (Legacy Registration - No GST/Invoice Required) -->
+<div id="onboardExistingAssetModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); z-index:9999; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(4px);">
+    <div style="background:#ffffff; width:660px; max-width:100%; max-height:92vh; border-radius:16px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.4); display:flex; flex-direction:column; overflow:hidden;">
+        
+        <!-- Modal Header -->
+        <div style="background:linear-gradient(135deg, #102a43 0%, #1e429f 100%); color:#ffffff; padding:18px 24px; display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
+            <div>
+                <div style="font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:999px; display:inline-block; margin-bottom:4px;">
+                    Legacy Equipment Onboarding • No Bills Required
+                </div>
+                <h3 style="margin:0; font-size:17px; font-weight:700; color:#ffffff;">📦 Register Existing Lab Item / Equipment</h3>
+            </div>
+            <button type="button" onclick="closeModal('onboardExistingAssetModal')" style="background:none; border:none; color:#ffffff; font-size:24px; cursor:pointer; line-height:1;">&times;</button>
+        </div>
+
+        <!-- Form Body -->
+        <form method="POST" action="index.php?route=onboard_existing_asset" style="padding:22px 24px; overflow-y:auto; flex:1;">
+            <input type="hidden" name="redirect_to" value="assets">
+
+            <!-- Context Info Notice -->
+            <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px; padding:12px 14px; margin-bottom:16px; display:flex; gap:10px; font-size:12px; color:#166534; line-height:1.45;">
+                <span style="font-size:18px; flex-shrink:0;">ℹ️</span>
+                <div>
+                    <strong>Original Invoices or GST Bills are NOT Required:</strong>
+                    For legacy equipment physically located in laboratories where original bills or purchase orders are unavailable, specify the equipment specifications along with an <strong>approximate / estimated cost</strong> to bring it under institutional tracking.
+                </div>
+            </div>
+
+            <!-- Department & Laboratory Placement -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" style="font-size:12px; font-weight:700;">Department *</label>
+                    <select name="dept_id" id="onboard_dept_select" class="form-control" required onchange="filterOnboardLabs()">
+                        <?php foreach ($allDepts as $dept): ?>
+                            <option value="<?= $dept['id'] ?>" <?= ((int)($user['dept_id'] ?? 1) === (int)$dept['id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($dept['name']) ?> (<?= htmlspecialchars($dept['code']) ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" style="font-size:12px; font-weight:700;">Laboratory / Section *</label>
+                    <select name="lab_id" id="onboard_lab_select" class="form-control" required>
+                        <?php foreach ($allLabs as $l): ?>
+                            <option value="<?= $l['id'] ?>" data-dept="<?= $l['dept_id'] ?>">
+                                <?= htmlspecialchars($l['name']) ?> (<?= htmlspecialchars($l['code']) ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Item Name & Category -->
+            <div style="display:grid; grid-template-columns:1.6fr 1fr; gap:12px; margin-bottom:12px;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" style="font-size:12px; font-weight:700;">Equipment / Item Name *</label>
+                    <input type="text" name="asset_name" class="form-control" placeholder="e.g. Dell OptiPlex 7090 Desktop Workstation" required>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" style="font-size:12px; font-weight:700;">Category *</label>
+                    <select name="category_id" class="form-control" required>
+                        <option value="6">🖥️ IT Equipment & Hardware</option>
+                        <option value="7">🔬 Lab Instruments & Machinery</option>
+                        <option value="4">🔌 Electronics & Boards</option>
+                        <option value="8">🪑 Furniture & Fixtures</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Brand & Model -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" style="font-size:12px; font-weight:700;">Brand / Manufacturer</label>
+                    <input type="text" name="brand" class="form-control" placeholder="Dell / HP / Cisco / Tektronix">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" style="font-size:12px; font-weight:700;">Model / Part Number</label>
+                    <input type="text" name="model" class="form-control" placeholder="OptiPlex 7090 / DS1054Z">
+                </div>
+            </div>
+
+            <!-- Physical Serial & Asset Tag -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" style="font-size:12px; font-weight:700;">Chassis Serial Number (Optional)</label>
+                    <input type="text" name="serial_number" class="form-control" placeholder="Serial no. from sticker/chassis">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" style="font-size:12px; font-weight:700;">Asset Tag (Leave blank to auto-generate)</label>
+                    <input type="text" name="asset_id" class="form-control" placeholder="e.g. MSEC-CSE-LINUX-EQ-01">
+                </div>
+            </div>
+
+            <!-- Approximate Cost & Estimated Year -->
+            <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:12px; margin-bottom:12px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" style="font-size:12px; font-weight:700; color:#0f172a;">
+                        Approximate / Estimated Cost (₹) *
+                    </label>
+                    <input type="number" step="0.01" name="purchase_cost" class="form-control" placeholder="e.g. 45000" required>
+                    <small style="font-size:10.5px; color:#64748b; margin-top:3px; display:block;">Enter best estimated historical or valuation figure</small>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" style="font-size:12px; font-weight:700; color:#0f172a;">Approx. Acquisition Date</label>
+                    <input type="date" name="purchase_date" class="form-control" value="<?= date('Y-01-01', strtotime('-2 years')) ?>">
+                    <small style="font-size:10.5px; color:#64748b; margin-top:3px; display:block;">Estimated installation / purchase year</small>
+                </div>
+            </div>
+
+            <!-- Location & Operating Status -->
+            <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:12px; margin-bottom:12px;">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" style="font-size:12px; font-weight:700;">Physical Location inside Lab *</label>
+                    <input type="text" name="location" class="form-control" placeholder="e.g. Row 1 - Terminal 05 / Test Bench 2" value="Terminal Bench" required>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" style="font-size:12px; font-weight:700;">Current Working Condition</label>
+                    <select name="asset_status" class="form-control">
+                        <option value="Available">Available & 100% Operational</option>
+                        <option value="In Use" selected>In Active Use by Students</option>
+                        <option value="Under Maintenance">Needs Maintenance / Servicing</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Hardware Specifications / Technical Notes -->
+            <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" style="font-size:12px; font-weight:700;">Hardware Specs / Legacy Notes (Optional)</label>
+                <textarea name="configuration" class="form-control" rows="2" placeholder="e.g. Intel Core i5 8th Gen, 16GB RAM, 256GB SSD, Gigabit Ethernet. Legacy machine onboarded by Lab In-Charge."></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid #e2e8f0; margin-top:16px; padding-top:14px;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('onboardExistingAssetModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="background:#102a43; border-color:#102a43;">
+                    ✓ Onboard Equipment to Master Register
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function filterOnboardLabs() {
+    var deptSelect = document.getElementById('onboard_dept_select');
+    var labSelect = document.getElementById('onboard_lab_select');
+    if (!deptSelect || !labSelect) return;
+    var selectedDept = deptSelect.value;
+    var options = labSelect.options;
+    var firstVisible = null;
+    for (var i = 0; i < options.length; i++) {
+        var opt = options[i];
+        var deptId = opt.getAttribute('data-dept');
+        if (!deptId || deptId === selectedDept) {
+            opt.style.display = '';
+            if (!firstVisible) firstVisible = opt;
+        } else {
+            opt.style.display = 'none';
+        }
+    }
+    if (firstVisible && options[labSelect.selectedIndex] && options[labSelect.selectedIndex].style.display === 'none') {
+        labSelect.value = firstVisible.value;
+    }
+}
+document.addEventListener('DOMContentLoaded', filterOnboardLabs);
 </script>
 <?php endif; ?>

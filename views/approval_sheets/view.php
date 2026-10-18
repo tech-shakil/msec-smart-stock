@@ -243,8 +243,8 @@ $approvals = StockRequest::getApprovals($reqId);
         </div>
         <div class="sig-slot">
             <div class="sig-title">Head of Department</div>
-            <div class="sig-status">✓ Approved</div>
-            <div style="font-size: 10px; color: #64748b;">Dept Quota Approved</div>
+            <div class="sig-status">✓ Endorsed</div>
+            <div style="font-size: 10px; color: #64748b;">Department Endorsement</div>
         </div>
         <div class="sig-slot">
             <div class="sig-title">Central Store Keeper</div>
@@ -253,10 +253,13 @@ $approvals = StockRequest::getApprovals($reqId);
         </div>
         <div class="sig-slot">
             <div class="sig-title">Vice Principal / Principal</div>
-            <div class="sig-status" style="color: #b45309;">
-                <?= ($sheet['total_cost'] > 25000) ? 'Principal Sanction' : 'VP Sanction' ?>
-            </div>
-            <div style="font-size: 10px; color: #64748b;">Final Institutional Sanction</div>
+            <div class="sig-status" style="color: #0369a1;">✓ Recommended</div>
+            <div style="font-size: 10px; color: #64748b;">Academic & Admin Concurrence</div>
+        </div>
+        <div class="sig-slot">
+            <div class="sig-title">Director / Management</div>
+            <div class="sig-status" style="color: #15803d;">Final Sanction</div>
+            <div style="font-size: 10px; color: #64748b;">Management Financial Allocation</div>
         </div>
     </div>
 

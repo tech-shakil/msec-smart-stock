@@ -43,8 +43,12 @@ $vendors = $pdo->query("SELECT id, company_name, gst_number FROM vendors WHERE s
         <div class="page-desc">Department: <strong><?= htmlspecialchars($req['dept_name']) ?></strong> &bull; Requested on <?= date('d M Y', strtotime($req['created_at'])) ?></div>
     </div>
     <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <button onclick="window.print()" class="btn btn-secondary hide-print">
+            🖨️ Print Indent Requisition Document
+        </button>
+
         <?php if ($existingSheet): ?>
-            <a href="index.php?route=approval_sheet&id=<?= $existingSheet['id'] ?>" class="btn btn-secondary" target="_blank">
+            <a href="index.php?route=approval_sheet&id=<?= $existingSheet['id'] ?>" class="btn btn-secondary hide-print" target="_blank">
                 📑 View Official Approval Sheet (<?= htmlspecialchars($existingSheet['sheet_number']) ?>)
             </a>
         <?php endif; ?>
@@ -60,7 +64,7 @@ $vendors = $pdo->query("SELECT id, company_name, gst_number FROM vendors WHERE s
         </span>
 
         <?php if (in_array($req['status'], ['APPROVED', 'STORE_VERIFIED']) && Auth::can('issue_stock')): ?>
-            <a href="index.php?route=issue_stock&request_id=<?= $req['id'] ?>" class="btn btn-primary">Generate Store Issue Voucher &rarr;</a>
+            <a href="index.php?route=issue_stock&request_id=<?= $req['id'] ?>" class="btn btn-primary hide-print">Generate Store Issue Voucher &rarr;</a>
         <?php endif; ?>
     </div>
 </div>
@@ -203,7 +207,17 @@ $vendors = $pdo->query("SELECT id, company_name, gst_number FROM vendors WHERE s
                                 <textarea name="comments" class="form-control" rows="2" placeholder="e.g. Verified technical need and departmental budget quota." required></textarea>
                             </div>
                             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                                <button type="submit" name="action" value="Approve" class="btn btn-success">✓ Sanction & Approve</button>
+                                <?php 
+                                    $actionBtnText = match($currentRole) {
+                                        'hod' => '✓ Endorse & Forward',
+                                        'dept_coordinator' => '✓ Verify & Forward',
+                                        'vice_principal' => '✓ Concur & Forward',
+                                        'principal' => '✓ Recommend to Management',
+                                        'director' => '✓ Final Sanction & Allocate',
+                                        default => '✓ Approve & Forward'
+                                    };
+                                ?>
+                                <button type="submit" name="action" value="Approve" class="btn btn-success"><?= $actionBtnText ?></button>
                                 <button type="submit" name="action" value="Return" class="btn btn-warning">↩ Return for Info</button>
                                 <button type="submit" name="action" value="Reject" class="btn btn-danger">✕ Reject</button>
                             </div>
@@ -279,6 +293,58 @@ $vendors = $pdo->query("SELECT id, company_name, gst_number FROM vendors WHERE s
                 <button type="submit" class="btn btn-primary">Generate Approval Sheet & Advance</button>
             </div>
         </form>
+    </div>
+</div>
+
+<style>
+@media print {
+    body { background: #ffffff !important; color: #000000 !important; }
+    .app-sidebar, .app-header, .hide-print, .btn, .card-header .btn { display: none !important; }
+    .app-main { margin: 0 !important; padding: 0 !important; }
+    .page-content { padding: 15px !important; }
+    .card { border: 1px solid #94a3b8 !important; box-shadow: none !important; margin-bottom: 16px !important; }
+    .responsive-split-grid { display: block !important; }
+    .print-only-header { display: block !important; }
+    .print-signatures-block { display: grid !important; }
+}
+.print-only-header {
+    display: none;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.print-signatures-block {
+    display: none;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px dashed #cbd5e1;
+    text-align: center;
+}
+</style>
+
+<div class="print-signatures-block">
+    <div style="border: 1px solid #cbd5e1; border-radius: 6px; padding: 14px;">
+        <div style="font-size: 11px; color: #64748b; margin-bottom: 30px;">1. INITIATED BY</div>
+        <div style="font-weight: 700; font-size: 13px;"><?= htmlspecialchars($req['requester_name']) ?></div>
+        <div style="font-size: 11px; color: #64748b;">Lab In-charge / Staff</div>
+    </div>
+    <div style="border: 1px solid #cbd5e1; border-radius: 6px; padding: 14px;">
+        <div style="font-size: 11px; color: #64748b; margin-bottom: 30px;">2. VERIFIED (EXISTING CHECK)</div>
+        <div style="font-weight: 700; font-size: 13px;">Dept Stock Coordinator</div>
+        <div style="font-size: 11px; color: #64748b;">Specification Verified</div>
+    </div>
+    <div style="border: 1px solid #cbd5e1; border-radius: 6px; padding: 14px;">
+        <div style="font-size: 11px; color: #64748b; margin-bottom: 30px;">3. APPROVED (DEPT SANCTION)</div>
+        <div style="font-weight: 700; font-size: 13px;">Head of Department (HOD)</div>
+        <div style="font-size: 11px; color: #64748b;">Official Sanction Granted</div>
+    </div>
+    <div style="border: 1px solid #cbd5e1; border-radius: 6px; padding: 14px;">
+        <div style="font-size: 11px; color: #64748b; margin-bottom: 30px;">4. STORE KEEPER GATEWAY</div>
+        <div style="font-weight: 700; font-size: 13px;">Central Store Keeper</div>
+        <div style="font-size: 11px; color: #64748b;">Catalog & Warehouse Check</div>
     </div>
 </div>
 
