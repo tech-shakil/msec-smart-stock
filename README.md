@@ -52,11 +52,11 @@ To re-seed fresh test data at any time:
 
 ---
 
-## 👥 Baseline Demonstration Accounts (14 Roles)
+## 👥 Baseline Demonstration Accounts (13 Institutional Roles)
 
 All accounts share the default development password: **`password123`**
 
-| Role | Username | Full Name | Department / Station |
+| Role | Username / Email | Full Name | Department / Station |
 |---|---|---|---|
 | **System Admin** | `admin` | Dr. K. Ramanathan | System Administration & IT Cell |
 | **Director** | `director` | Dr. S. Syed Mohamed | Executive Directorate |
@@ -65,13 +65,15 @@ All accounts share the default development password: **`password123`**
 | **Store Keeper** | `store_keeper` | S. Mohamed Riaz | Central Store Operational Gateway |
 | **Purchase Officer**| `purchase_officer` | M. Senthil Kumar | Procurement Cell |
 | **Accounts Officer**| `accounts_officer` | R. Narayanan | Finance & Accounts |
-| **HOD (CSE)** | `hod_cse` | Dr. M. Balamurugan | Computer Science & Engineering |
-| **Dept Coordinator**| `coord_cse` | K. Saravanan | CSE Department Store |
-| **Lab Incharge** | `lab_ai` | J. Pravin Kumar | AI & Data Science Laboratory |
-| **Faculty** | `faculty_cse` | Dr. R. Kavitha | Assistant Professor (Senior Grade) |
-| **Technician** | `tech_hardware`| M. Arumugam | Central Hardware Repair Bay |
+| **HOD (CSE)** | `csehod@msec.org.in` | Mr. N. Balasubramanian | Computer Science & Engineering |
+| **Dept Coordinator**| `seenipulavar2025@gmail.com` | Mr. K. Seeni Pulavar Pitchai | CSE Department Store & Indents |
+| **Lab In-Charge (Linux & CASE)** | `merlinrithika21@gmail.com` | Ms. M.K. Merlin Rithika | Linux & CASE Tools Laboratories |
+| **Lab In-Charge (Android)** | `Jothichandran1994@gmail.com` | Ms. C. Mangala Jothi | Android Laboratory |
+| **Technician** | `tech_hardware` | M. Arumugam | Central Hardware Repair Bay |
 | **Auditor** | `auditor_ext` | CA. V. Swaminathan | Statutory & Internal Audit Cell |
 | **Management Viewer**| `viewer_mgmt` | H. Farook Ahmed | Governing Board Management |
+
+*Note: The redundant `faculty` role has been decommissioned. In academic departments, lab requisitions and physical custody are raised and managed directly by designated Lab In-charges and Department Coordinators.*
 
 *Tip: A Quick Persona Switcher is available at the top-right header for evaluators and committee members to switch roles seamlessly.*
 
@@ -81,12 +83,15 @@ All accounts share the default development password: **`password123`**
 
 ### 1. Store Keeper Operational Gateway & Approval Sheets
 - **The Gateway Principle**: The Store Keeper is the mandatory verification gate between department authorization and institutional sanction.
-- **Approval Sheet (`views/approval_sheets/view.php`)**: The Store Keeper inspects catalog balances, physical stores, vendor quotations, and prepares the official printable Approval Sheet (`AS-2026-0001`) with 4-tier signature blocks.
-- **Approval Thresholds**:
-  - **Tier 1 (≤ ₹5,000)**: HOD + Store Keeper
-  - **Tier 2 (₹5,001 - ₹25,000)**: HOD + Vice Principal
-  - **Tier 3 (₹25,001 - ₹1,00,000)**: HOD + Vice Principal + Principal
-  - **Tier 4 (> ₹1,00,000)**: HOD + Vice Principal + Principal + Director
+- **Approval Sheet (`views/approval_sheets/view.php`)**: The Store Keeper inspects catalog balances, physical stores, vendor quotations, and prepares the official printable Approval Sheet (`AS-2026-0001`) with institutional signature blocks.
+- **Institutional Approval Hierarchy**:
+  - Department Need & Technical Scrutiny (Originator & Coordinator)
+  - Department Indent Endorsement (HOD)
+  - Central Store Keeper Operational Gate & Approval Sheet
+  - Administrative Review & Concurrence (Vice Principal)
+  - Institutional Academic Review & Recommendation (Principal)
+  - **Ultimate Financial Sanction & Budget Allocation (Management / Directorate)**
+  - Material Fulfillment, PO Generation & Delivery (Store Keeper)
 
 ### 2. Procurement & Vendor Management (`index.php?route=procurement`)
 - **Quotation Comparison Statement**: Side-by-side comparison of 3 vendor quotes with rates, taxes, delivery periods, warranty, and L1 recommendations.
@@ -108,6 +113,11 @@ All accounts share the default development password: **`password123`**
 - **NAAC Criteria 4 (IT & Infrastructure)**: PC-to-student ratio calculation (**1 : 1.8** with 1,480 student PCs), 1 Gbps leased line, Wi-Fi APs, and smart halls.
 - **NBA Criteria (Lab Equipment & Maintenance)**: NABL calibration dates, next service due dates, and major equipment (> ₹50,000) utilization ledgers.
 - **One-Click CSV Export**: Instant statutory download via `Export to CSV`.
+
+### 7. Legacy & Existing Equipment Onboarding (Lab In-Charge Portal)
+- **Zero-Barrier Ingestion**: Lab In-Charges can register pre-existing laboratory instruments, desktop terminals, oscilloscopes, and legacy gear already installed in labs.
+- **No GST / Tax Invoices Required**: Recognizes that historical paper invoices may be lost or archived; accepts approximate/estimated valuation (`purchase_cost`) to bring physical lab hardware under formal institutional accountability.
+- **Automated Legacy Tagging**: Automatically synthesizes standard college asset tags (`MSEC-{LAB}-LEGACY-{RAND}`) with department, laboratory, and custodian bindings.
 
 ---
 

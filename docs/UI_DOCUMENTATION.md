@@ -36,6 +36,20 @@
 - The portal enforces account locking after **5 consecutive failed attempts**.
 - Accounts remain locked until explicitly unlocked by the System Administrator with an audit justification memo.
 
+### 2.4 Multi-Department & Role-First Authentication Portal (`views/auth/login.php`)
+- **Institutional Brand Architecture**: College crest, autonomous designation, NAAC 'A+' accreditation pill, and SSL verification.
+- **Section Navigation Tabs**:
+  1. `🎓 Academic & Labs` (CSE, IT, AI&DS, ECE, EEE, MECH, CIVIL, Central Library, Incubation Hub).
+  2. `🏬 Stores & Purchase` (Central Store Keeper, Purchase Officer, Chief Accounts Officer).
+  3. `🏛️ Directorate` (Director, Principal, Vice Principal, Management Viewer).
+  4. `🛡️ Admin & Audit` (Super Administrator, Internal & NAAC Auditor).
+- **Context-Aware Dynamic Login Console**: Selecting any personnel or role card immediately updates the login console with their departmental scope, designation, authority ceiling, and pre-populates official credentials for direct evaluation. Manual credentials can also be typed anytime.
+- **Mobile Native Web App (iOS & Android)**:
+  - **iOS Safari Optimizations**: `viewport-fit=cover`, Apple touch icons, full safe-area insets (`env(safe-area-inset-top)` / `bottom`) to avoid notch and Home Indicator collisions, and `font-size: 16px !important;` on form controls to eliminate Safari's viewport zoom bug.
+  - **Android Chrome Optimizations**: Theme color headers, Material touch manipulation with `-webkit-tap-highlight-color: transparent`, and zero tap delay.
+  - **Mobile Segmented Switcher**: Sticky segmented navigation bar (`[1. Select Role]` / `[2. Sign In]`) with live role status badge on screens `<= 960px`.
+  - **Floating Thumb Action Pill**: Sticky bottom card showing the active persona with an instant `Sign In ⚡` action button within natural one-handed reach.
+
 ---
 
 ## 3. The 14 Role Workspaces & Dashboards
@@ -45,16 +59,15 @@ Each role in MSEC SMART STOCK features a tailored dashboard with specific key pe
 | Role Key | Institutional Role | Primary Responsibilities |
 |---|---|---|
 | `super_admin` / `admin` | System Administrator | User provisioning, credential resets, account locking, audit trail, security threat logs, system parameters |
-| `director` | Directorate Executive | Capital expenditure sanctions (> ₹1,00,000), institutional valuation, strategic budget allocation |
-| `principal` | Principal | Institutional sanctions (> ₹25,000), major asset approvals, compliance audit sign-offs |
-| `vice_principal` | Vice Principal | Administrative sanctions (₹5,000 - ₹25,000), inter-department transfers, stock adjustments |
+| `director` | Directorate Executive | **Ultimate Financial Sanctioning Authority**, institutional valuation, capital allocations, Trust governance |
+| `principal` | Principal | Institutional academic review & recommendation to Management, compliance audit sign-offs |
+| `vice_principal` | Vice Principal | Administrative review & concurrence, inter-department transfers, stock adjustments |
 | `store_keeper` | Central Store Keeper | **Mandatory Operational Gateway**, existing stock verification, spec checking, quotation review, Approval Sheet generation, dispatch vouchers |
 | `purchase_officer` | Purchase Officer | Empaneled vendors, 3-quote rule, comparative quotation matrix, L1 selection, Purchase Order (PO) issuance |
 | `accounts_officer` | Accounts Officer | Department budget head monitoring, capital/operational fund commitment, financial clearance |
-| `hod` | Head of Department (HOD) | Departmental quota authorization, lab indent approvals, internal transfers, equipment disposal |
+| `hod` | Head of Department (HOD) | Department indent endorsement, lab indent review, quota allocation (no independent financial sanction) |
 | `dept_coordinator` | Department Coordinator | Technical spec verification, lab item inspections, store voucher receipt acknowledgment |
-| `lab_incharge` | Laboratory Incharge | Lab terminal custody, consumable indents, physical damage and fault reporting |
-| `faculty` | Faculty Member | Teaching aids/project indents, personal hardware custody, **strict no-self-approval rule** |
+| `lab_incharge` | Laboratory In-Charge | Lab terminal custody, legacy equipment onboarding (approx costs, no GST bills required), consumable indents, physical damage and fault reporting |
 | `technician` | Laboratory Technician | Repair bay workbench, fault diagnosis, SMPS/RAM replacements, repair costs, spares indents |
 | `auditor` | Statutory & Internal Auditor | Quarterly/Annual stock counts, physical vs system variance, dead stock watchlist, immutable ledger inspection |
 | `management_viewer` | Management Viewer | Read-only governance analytics, department stock trends, NAAC/NBA compliance overview |
@@ -63,22 +76,21 @@ Each role in MSEC SMART STOCK features a tailored dashboard with specific key pe
 
 ## 4. Key Workflows & Operational Life Cycles
 
-### 4.1 The 4-Tier Approval Workflow & Operational Gateway
-No purchase request bypasses the Central Store Keeper, regardless of monetary value.
+### 4.1 The Institutional Approval Workflow & Operational Gateway
+No purchase request bypasses the Central Store Keeper, regardless of monetary value. Department heads endorse indents, while ultimate financial sanction rests exclusively with Management (Directorate).
 
 ```mermaid
 graph TD
-    A[Faculty / Lab Incharge Raises Indent] --> B[Dept Coordinator Verifies Specs]
-    B --> C[HOD Authorizes from Dept Quota]
+    A[Lab In-Charge / Faculty Raises Indent] --> B[Dept Coordinator: Need & Technical Scrutiny]
+    B --> C[HOD: Department Indent Endorsement]
     C --> D[Central Store Keeper: Operational Gateway]
     D -->|Buffer Exists| E[Issue from Existing Central Stock]
     D -->|Purchase Required| F[Verify Catalog, Specs & 3 Vendor Quotations]
     F --> G[Generate Official Store Approval Sheet AS-XXXX]
-    G --> H{Approval Tier}
-    H -->|Tier 1: <= 5,000| I[HOD + Store Keeper Sanction]
-    H -->|Tier 2: 5,001 - 25,000| J[Vice Principal Sanction]
-    H -->|Tier 3: 25,001 - 1,00,000| K[Vice Principal + Principal Sanction]
-    H -->|Tier 4: > 1,00,000| L[VP + Principal + Director Sanction]
+    G --> H[Vice Principal: Administrative Concurrence]
+    H --> I[Principal: Institutional Academic Recommendation]
+    I --> J[Director / Management: Final Financial Sanction & Allocation]
+    J --> K[Central Store Keeper: Material Fulfillment & Issue]
 ```
 
 ### 4.2 Official Store Keeper Approval Sheet (`approval_sheets/view.php`)
@@ -115,7 +127,7 @@ graph TD
 ### 5.1 NAAC Criteria 4 (IT & Infrastructure Facilities)
 - **Computer-to-Student Ratio**: 1,480 active student terminals against 2,650 enrolled students = **1 : 1.8 ratio** (exceeding NAAC autonomous benchmarks).
 - **Bandwidth**: 1 Gbps dedicated 1:1 leased line.
-- **Wi-Fi Coverage**: 85 Cisco Aironet Dual-Band Enterprise APs across academic blocks and hostels.
+- **Wi-Fi Coverage**: 85 Cisco Aironet Dual-Band Enterprise APs across academic blocks and campus facilities.
 - **ICT Facilities**: 48 Smart Interactive panels and projection seminar halls.
 - **Laboratory Terminal Breakdown**: AI Lab (60), Programming Lab (75), Network Lab (45), VLSI Lab (40), CAD/CAM Lab (60), Digital Library (120).
 
@@ -142,10 +154,10 @@ All accounts are pre-seeded in `database/msec_stock.sqlite` with default passwor
 | `store_keeper` | Store Keeper | S. Mohamed Riaz | Central Store Gateway |
 | `purchase_officer` | Purchase Officer | M. Senthil Kumar | Procurement Cell |
 | `accounts_officer` | Accounts Officer | R. Narayanan | Finance & Accounts |
-| `hod_cse` | HOD | Dr. M. Balamurugan | Computer Science & Engineering |
-| `coord_cse` | Dept Coordinator | K. Saravanan | CSE Department Store |
-| `lab_ai` | Lab Incharge | J. Pravin Kumar | AI & Data Science Laboratory |
-| `faculty_cse` | Faculty | Dr. R. Kavitha | Assistant Professor (Senior Grade) |
+| `csehod@msec.org.in` | HOD (CSE) | Mr. N. Balasubramanian | Computer Science & Engineering |
+| `seenipulavar2025@gmail.com` | Dept Coordinator | Mr. K. Seeni Pulavar Pitchai | CSE Department Store & Indents |
+| `merlinrithika21@gmail.com` | Lab In-Charge (Linux & CASE) | Ms. M.K. Merlin Rithika | Linux & CASE Tools Laboratories |
+| `Jothichandran1994@gmail.com` | Lab In-Charge (Android) | Ms. C. Mangala Jothi | Android Laboratory |
 | `tech_hardware` | Technician | M. Arumugam | Central Hardware Repair Bay |
 | `auditor_ext` | Auditor | CA. V. Swaminathan | Statutory & Internal Audit Cell |
 | `viewer_mgmt` | Management Viewer | H. Farook Ahmed | Governing Board Management |

@@ -72,11 +72,8 @@ you can allocate the 10 locked modules to your team members across these 5 struc
   - `views/requests/index.php` & `views/requests/view.php`
 * **Assigned Deliverables & Test Cases:**
   1. Test raising new indents with auto-generated format like `CSE-REQ-2026-00125`.
-  2. Validate the **monetary threshold matrix** from Section 11.1:
-     - **Below ₹5,000:** Routes to HOD + Store Keeper.
-     - **₹5,001 – ₹25,000:** Routes to HOD + Vice Principal.
-     - **₹25,001 – ₹1,00,000:** Routes to HOD + Vice Principal + Principal.
-     - **Above ₹1,00,000:** Routes to HOD + VP + Principal + Director.
+  2. Validate the **institutional governance workflow**:
+     - Coordinator (Need & balance check) &rarr; HOD (Indent endorsement) &rarr; Store Keeper (Operational Gate & Approval Sheet) &rarr; VP & Principal (Administrative & Academic Concurrence) &rarr; Management / Director (Final Financial Sanction) &rarr; Store Keeper (Material fulfillment).
   3. Test the interactive **Approve / Reject** buttons with review comments.
 
 ---

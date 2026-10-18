@@ -248,14 +248,14 @@ erDiagram
 | Role | Hierarchy Level | Primary Operational Scope | Can Raise Indent | Can Approve Dept | Store Gate Review | Sanction Sanction | Purchase & PO | Issue Stock | Asset Maint | Audit / View |
 |:---|:---|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | **1. System Admin** | System Admin | Full technical, users, roles, password reset, security audit | No | No | No | No | No | No | No | Full Admin |
-| **2. Director** | Management | Institutional oversight, sanctions > ₹1,00,000, trust reports | No | No | No | > ₹1,00,000 | View | View | View | Complete |
-| **3. Principal** | Institution | College head, sanctions > ₹25,000, purchase final sign-off | No | No | No | > ₹25,000 | View | View | View | Complete |
-| **4. Vice Principal** | Administration | Institutional sanctions > ₹5,000 to ₹25,000, inter-dept moves | No | No | No | > ₹5,000 | View | View | View | Complete |
+| **2. Director / Management** | Management | **Ultimate Financial Sanctioning Authority**, institutional oversight, capital/operating allocations | No | No | No | **All Sanctions** | View | View | View | Complete |
+| **3. Principal** | Institution | Institutional academic review & recommendation, college head | No | No | No | Review & Recommend | View | View | View | Complete |
+| **4. Vice Principal** | Administration | Administrative review & concurrence, inter-dept moves | No | No | No | Administrative Review | View | View | View | Complete |
 | **5. Management Viewer**| Read Only | Board/Trust reporting, high-level dashboards, KPIs | No | No | No | No | View | View | View | Read Only |
-| **6. Store Keeper** | Operational Gateway | Central gateway, price/spec check, approval sheet, GRN, issue | Yes (Store) | No | **Mandatory** | Low (<5k) | View/GRN | **Yes** | Yes | Operations |
+| **6. Store Keeper** | Operational Gateway | Central gateway, price/spec check, approval sheet, GRN, issue | Yes (Store) | No | **Mandatory** | Operational Gate | View/GRN | **Yes** | Yes | Operations |
 | **7. Purchase Officer** | Procurement | Vendor master, quotations, comparative statements, POs | No | No | No | No | **Yes** | No | No | Procurement |
 | **8. Accounts Officer** | Finance | Budget verifications, allocations, payments, expenditures | No | No | No | Budget Check | Clearance | View | View | Financial |
-| **9. HOD** | Department | Department head, verifies need, authorizes dept indents | Yes | **Yes** | No | Dept (<5k) | View | Acknowledge| View | Department |
+| **9. HOD** | Department | Department head, verifies need, endorses dept indents (no independent financial sanction) | Yes | **Endorse** | No | Endorse Only | View | Acknowledge| View | Department |
 | **10. Dept Coordinator** | Department | Technical check, spec verify, lab needs, gate-forward to HOD | Yes | Verify | No | No | No | Acknowledge| View | Department |
 | **11. Lab Incharge** | Laboratory | Lab inventory, consumable needs, equipment faults | Yes | No | No | No | No | Acknowledge| Report | Lab Only |
 | **12. Faculty** | User Level | Academic/project requirements, view personal requisitions | Yes | No | No | No | No | Acknowledge| Report | Personal |
@@ -270,9 +270,9 @@ erDiagram
 ```mermaid
 flowchart TD
     A[Faculty / Lab Incharge Raises Indent] --> B[Department Coordinator Verifies Needs & Specs]
-    B -->|Verified| C[HOD Approves Department Need]
+    B -->|Verified| C[HOD Endorses Department Need]
     B -->|Needs Clarification| A
-    C -->|Approved| D[STORE KEEPER: Stock Verification & Allocation]
+    C -->|Endorsed| D[STORE KEEPER: Stock Verification & Allocation]
     C -->|Rejected| R1[Requisition Rejected]
     D -->|Stock Available| E[Store Keeper Generates Issue Voucher]
     D -->|Stock Insufficient| F[Converts to Type 2 New Purchase]
@@ -285,7 +285,7 @@ flowchart TD
 ```mermaid
 flowchart TD
     A[Faculty / Lab Assistant Raises Indent] --> B[Department Coordinator Verification]
-    B --> C[HOD Department Authorization]
+    B --> C[HOD Department Endorsement]
     C --> D[STORE KEEPER OPERATIONAL GATEWAY]
     
     subgraph Store_Keeper_Review [Store Keeper Mandatory Verifications]
@@ -296,13 +296,11 @@ flowchart TD
         D4 --> D5[5. Prepare Official Digital Approval Sheet]
     end
     
-    D5 --> E{Approval Threshold Routing}
-    E -->|Value <= 5,000| SK_AUTH[Store Keeper & HOD Sanction]
-    E -->|5,001 to 25,000| VP_AUTH[Vice Principal Administrative Sanction]
-    E -->|25,001 to 1,00,000| PRIN_AUTH[Principal Institutional Sanction]
-    E -->|Above 1,00,000| DIR_AUTH[Principal + Director Capital Sanction]
+    D5 --> VP_AUTH[Vice Principal Administrative Concurrence]
+    VP_AUTH --> PRIN_AUTH[Principal Institutional Academic Recommendation]
+    PRIN_AUTH --> DIR_AUTH[Director / Management Final Financial Sanction]
     
-    SK_AUTH & VP_AUTH & PRIN_AUTH & DIR_AUTH --> F[Accounts Officer Budget Head Verification]
+    DIR_AUTH --> F[Accounts Officer Budget Head Verification]
     F --> G[Purchase Officer Issues Systematic PO PO-2026-XXXX]
     G --> H[Vendor Delivers Goods with Invoice & Challan]
     H --> I[STORE KEEPER: Physical Inspection & GRN GRN-2026-XXXX]
@@ -433,7 +431,7 @@ Each role will have its own dedicated view file in `views/dashboards/`:
 > The following parameters have sane default configurations built in, but can be customized based on institutional preference:
 
 1. **Email/SMTP Credentials**: Automated notifications are configured with standard templates. Should the system connect to Google Workspace (`smtp.gmail.com`) or an on-premise college mail server? *(Defaults to internal logging if SMTP is unconfigured)*.
-2. **High-Value Thresholds**: We configured the standard tiers: Tier 1 (<= ₹5,00,00, Store Keeper & HOD), Tier 2 (₹5,001 - ₹25,000, VP), Tier 3 (₹25,001 - ₹1,00,000, Principal), Tier 4 (> ₹1,00,000, Principal & Director). Are these threshold amounts final?
+2. **Institutional Sanction Hierarchy**: Configured per MSEC governance: HOD provides departmental endorsement, Vice Principal provides administrative concurrence, Principal provides academic recommendation, and Management (Directorate) grants final financial sanction for all procurements.
 3. **Database Choice**: The system operates with zero-config SQLite portable file and seamless switchover to MySQL/MariaDB via `config/database.php`.
 
 ---

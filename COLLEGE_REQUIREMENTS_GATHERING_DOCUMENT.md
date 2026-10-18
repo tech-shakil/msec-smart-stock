@@ -50,7 +50,6 @@ Please verify and complete the master registry of all academic departments, cent
 | **EXAM** | Office of the Controller of Examinations (COE) | | | |
 | **PHYS** | Physical Education & Sports Department | | | |
 | **TRANS** | Campus Transport & Vehicle Maintenance Division | | | |
-| **HOSTEL**| Men's & Women's Campus Hostels | | | |
 
 *List any additional research centers, incubation cells, or autonomous bodies requiring stock tracking:*  
 `__________________________________________________________________________________________________`
@@ -61,9 +60,9 @@ Please verify and complete the master registry of all academic departments, cent
 For each department, please specify all distinct laboratories where equipment and assets reside:
 | Department | Laboratory / Workshop Name | Room / Lab No. | Incharge Faculty / Staff |
 |:---|:---|:---|:---|
-| CSE | AI & Deep Learning Laboratory | CS-102 | |
-| CSE | Advanced Programming & Web Tech Lab | CS-104 | |
-| CSE | Cloud Computing & IoT Laboratory | CS-106 | |
+| CSE | Linux Laboratory | Main Block - Lab 201 | Ms. M.K. Merlin Rithika (merlinrithika21@gmail.com) |
+| CSE | CASE Tools Laboratory | Main Block - Lab 304 | Ms. M.K. Merlin Rithika (merlinrithika21@gmail.com) |
+| CSE | Android Laboratory | Main Block - Lab 205 | Ms. C. Mangala Jothi (Jothichandran1994@gmail.com) |
 | IT | Network Security & Mobile App Lab | IT-201 | |
 | ECE | VLSI Design & DSP Laboratory | EC-202 | |
 | ECE | Optical Communication & Microwave Lab | EC-205 | |
@@ -96,17 +95,16 @@ The portal enforces a 15-role security model. Please nominate the responsible of
 
 | Role Identifier | Role Level | Functional Privileges | Nominated Officer & Official Email |
 |:---|:---|:---|:---|
-| **`director`** | Management | Sanctions > ₹1,00,000, Trust Governance, Full KPIs | |
-| **`principal`** | Institution | Sanctions > ₹25,000, Policy Approvals, College Audit | |
-| **`vice_principal`**| Admin | Sanctions > ₹5,000 to ₹25,000, Inter-dept allocations | |
+| **`director`** | Management | **Ultimate Financial Sanctioning Authority**, Trust Governance, Full KPIs | |
+| **`principal`** | Institution | Institutional Academic Review & Recommendation, Policy Approvals, College Audit | |
+| **`vice_principal`**| Admin | Administrative Review & Concurrence, Inter-dept allocations | |
 | **`admin`** | System | User creation, Master data, System settings, Password resets | |
 | **`store_keeper`** | Operations | Stock entry, Issue vouchers, Delivery challans, Audit | |
 | **`purchase_officer`**| Procurement | Purchase Indents, PO generation, Vendor records, GRN | |
 | **`accounts_officer`**| Finance | Budget verifications, PO clearance, Asset valuation | |
-| **`hod`** | Department | Tier-1 Approvals (< ₹5,000), Dept requisitions & balances | |
-| **`dept_coordinator`**| Department | Delivery challan acknowledgment, Dept transfer requests | |
-| **`lab_incharge`** | Laboratory | Lab consumable indents, Asset damage/maintenance logs | |
-| **`faculty`** | User Level | Raise classroom/project indents, View personal requests | |
+| **`hod`** | Department | Department Indent Endorsement (No autonomous financial sanction), Dept requisitions & balances | |
+| **`dept_coordinator`**| Department | Technical spec scrutiny, Delivery challan acknowledgment, Dept transfer requests | |
+| **`lab_incharge`** | Laboratory | Lab consumable indents, Asset damage logs, Legacy equipment onboarding (approx cost, no GST bills required) | |
 | **`technician`** | User Level | Consumable requests, Tool crib entries, Repair reporting | |
 | **`auditor`** | Oversight | Read-only inspection of stock ledger, Verification, Logs | |
 | **`management_viewer`**| Oversight | Read-only executive dashboards and statutory reports | |
@@ -151,15 +149,18 @@ Please confirm which automated emails the college wishes to activate:
 
 ## 4. 💰 Financial Approval & Budget Hierarchy
 
-### 4.1 Monetary Sanction Threshold Matrix (Section 11)
-Please confirm or adjust the financial routing thresholds for purchasing and issuing stock:
+### 4.1 Institutional Approval Ladder (Section 11)
+At MSEC, departmental heads endorse indents without independent financial sanction authority. All procurement is routed through institutional concurrence up to **Management (Directorate)** for final financial sanction:
 
-| Tier Level | Monetary Bracket | Approval Sequence | College Policy Confirmation |
-|:---:|:---|:---|:---:|
-| **Tier 1 (Low Value)** | Below **₹5,000** | HOD &rarr; Central Store Keeper | `[ ] Confirm  /  [ ] Adjust: _________` |
-| **Tier 2 (Mid Value)** | **₹5,001 – ₹25,000** | HOD &rarr; Vice Principal | `[ ] Confirm  /  [ ] Adjust: _________` |
-| **Tier 3 (High Value)** | **₹25,001 – ₹1,00,000** | HOD &rarr; Vice Principal &rarr; Principal | `[ ] Confirm  /  [ ] Adjust: _________` |
-| **Tier 4 (Capital / Ultra)**| Above **₹1,00,000** | HOD &rarr; VP &rarr; Principal &rarr; Director | `[ ] Confirm  /  [ ] Adjust: _________` |
+| Stage Level | Authority Role | Scope & Institutional Responsibility |
+|:---:|:---|:---|
+| **Level 1** | Department Coordinator | Need and technical specification verification |
+| **Level 2** | Head of Department (HOD) | Department indent scrutiny and endorsement |
+| **Level 3** | Central Store Keeper | Operational warehouse buffer check & official Approval Sheet |
+| **Level 4** | Vice Principal | Administrative review and concurrence |
+| **Level 5** | Principal | Institutional academic review and recommendation |
+| **Level 6** | Director / Management | **Ultimate Financial Sanction and Fund Allocation** |
+| **Level 7** | Central Store Keeper | Material fulfillment, PO generation, and dispatch |
 
 ### 4.2 Department Budget Account Heads
 Does each academic department have an allocated annual inventory budget?
@@ -309,10 +310,10 @@ To upload all college data in **one single step**, please have the administrativ
 |:---|:---|:---|:---|:---|:---|:---|:---|
 | **Staff_ID** | **Username** | **Full_Name** | **Official_Email** | **Mobile_Number** | **Department_Code** | **System_Role** | **Designation** |
 | MSEC0101 | storekeeper | K. Ramasamy | store@msec.org.in | 9876543215 | ADMIN | store_keeper | Central Store Keeper |
-| MSEC0205 | hod_cse | Dr. A. Chandrasekar | hod.cse@msec.org.in | 9876543218 | CSE | hod | Professor & Head (CSE) |
-| MSEC0214 | coord_cse | Prof. M. Vijay | coord.cse@msec.org.in| 9876543220 | CSE | dept_coordinator | Asst. Prof & Stock Coordinator |
-| MSEC0222 | lab_ai | S. Sundar | lab.ai@msec.org.in | 9876543222 | CSE | lab_incharge | Lab Incharge (AI Lab) |
-| MSEC0231 | fac_kumar | Dr. S. Kumar | kumar.cse@msec.org.in| 9876543223 | CSE | faculty | Associate Professor |
+| MSEC0205 | hod_cse | Mr. N. Balasubramanian | csehod@msec.org.in | 9443112345 | CSE | hod | Associate Professor & Head of Department (CSE) |
+| MSEC0214 | coord_cse | Mr. K. Seeni Pulavar Pitchai | seenipulavar2025@gmail.com| 9842167890 | CSE | dept_coordinator | Assistant Professor & Department Stock Coordinator |
+| MSEC0222 | merlin_rithika | Ms. M.K. Merlin Rithika | merlinrithika21@gmail.com | 9789012345 | CSE | lab_incharge | Assistant Professor & Lab In-charge (Linux & CASE Tools) |
+| MSEC0223 | mangala_jothi | Ms. C. Mangala Jothi | Jothichandran1994@gmail.com| 9894054321 | CSE | lab_incharge | Assistant Professor & Lab In-charge (Android) |
 
 ---
 

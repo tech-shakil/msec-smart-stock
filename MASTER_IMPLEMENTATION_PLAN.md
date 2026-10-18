@@ -27,7 +27,7 @@ Deployment Stack:     Modular PHP 8.2 (OOP) | Dual Engine (SQLite 3 / MariaDB 10
 1. [Institutional Profile & Project Vision](#1-institutional-profile--project-vision)
 2. [Master Architecture & Technology Stack](#2-master-architecture--technology-stack)
 3. [Universal Display & Responsive Layout System](#3-universal-display--responsive-layout-system)
-4. [The 14 Dedicated System Roles & Access Matrix](#4-the-14-dedicated-system-roles--access-matrix)
+4. [The 13 Dedicated System Roles & Access Matrix](#4-the-13-dedicated-system-roles--access-matrix)
 5. [Core Institutional Workflows & Non-Negotiable Rules](#5-core-institutional-workflows--non-negotiable-rules)
 6. [Detailed 10-Module Implementation Specifications](#6-detailed-10-module-implementation-specifications)
 7. [Distributed 3-Person Team Work Allocation Matrix (Lead + 2 Juniors)](#7-distributed-3-person-team-work-allocation-matrix-lead--2-juniors)
@@ -58,7 +58,7 @@ Deployment Stack:     Modular PHP 8.2 (OOP) | Dual Engine (SQLite 3 / MariaDB 10
 ### 2.1 Technology Stack Architecture
 * **Server Runtime:** PHP 8.2+ (Modular OOP architecture, PSR-4 styled autoloading, PDO database abstraction).
 * **Database Engine:** Dual Engine Strategy:
-  - *Local / Development:* Portable, zero-configuration SQLite 3 (`database/msec_stock.sqlite`) pre-seeded with 14 role personas, real institutional items, vendors, and transactions.
+  - *Local / Development:* Portable, zero-configuration SQLite 3 (`database/msec_stock.sqlite`) pre-seeded with 13 role personas, real institutional items, vendors, and transactions.
   - *Production / Deployment:* Enterprise MariaDB 10.4+ / MySQL 8.0 (`database/schema_mysql.sql` and `database/seed_mysql.sql`) via XAMPP.
 * **Presentation Tier:** Pure Vanilla CSS Design System (`public/css/style.css`) with zero external CSS frameworks (no Tailwind/Bootstrap bloat), CSS Custom Properties (Tokens), and dynamic clamp-based responsive typography.
 * **Client Interactivity:** Lightweight Vanilla JavaScript (`public/js/app.js`) handling real-time searches, multi-item dynamic tables, modal dialogues, and print stylesheets.
@@ -91,8 +91,8 @@ msec-smart-stock/
 │
 ├── views/
 │   ├── layout/                   # Header, mobile drawer, sidebar (12 menus), breadcrumbs, footer
-│   ├── auth/                     # Authorized sign-in portal with 14-role quick evaluation roster
-│   ├── dashboards/               # 14 role-dedicated custom workspaces (Storekeeper, HOD, Director, etc.)
+│   ├── auth/                     # Authorized sign-in portal with 13-role quick evaluation roster
+│   ├── dashboards/               # 13 role-dedicated custom workspaces (Storekeeper, HOD, Director, etc.)
 │   ├── inventory/                # Live catalog, stock entry modal, stock adjustments with audit reason
 │   ├── requests/                 # Indent log, request creation form, interactive approval review view
 │   ├── distribution/             # Issue register, printable official issue voucher / delivery challan
@@ -133,26 +133,46 @@ A key institutional requirement is that the UI must look sharp, comfortable, and
 
 ---
 
-## 👥 4. The 14 Dedicated System Roles & Access Matrix
+## 👥 4. The 13 Dedicated System Roles & Access Matrix
 
 Every stakeholder at MSEC accesses a tailored dashboard containing only the metrics, action queues, and operations relevant to their post:
 
 | Role ID | Role Title | Key Persona Username | Core Functional Scope & Authority |
 |:---|:---|:---|:---|
 | **01** | **Super Administrator** | `superadmin` | Security console, user accounts, password resets, system locks, master audit trail. |
-| **02** | **Director** | `director` | High-level financial KPIs, capital sanctions exceeding ₹1,00,000, campus compliance. |
-| **03** | **Principal** | `principal` | Institutional sanctions (₹25,001 – ₹1,00,000), academic department budget checks. |
-| **04** | **Vice Principal** | `viceprincipal` | Administrative sanctions (₹5,001 – ₹25,000), inter-department transfers, stock quotas. |
+| **02** | **Director / Management** | `director` | **Ultimate Financial Sanctioning Authority:** Institutional capital/operating allocations, Trust governance, campus compliance. |
+| **03** | **Principal** | `principal` | **Institutional Academic Review & Recommendation:** Academic department budget checks, institutional policy concurrence. |
+| **04** | **Vice Principal** | `viceprincipal` | **Administrative Review & Concurrence:** Administrative verification, inter-department transfers, stock quotas. |
 | **05** | **Management Viewer** | `management` | Read-only institutional analytics, governance audits, high-level summaries. |
 | **06** | **Central Store Keeper** | `storekeeper` | **The Operational Gateway:** Catalog inventory, stock adjustments, GRN, issue vouchers. |
 | **07** | **Purchase Officer** | `purchaseofficer` | Vendor onboarding, quotation comparisons, L1 analysis, PO generation. |
 | **08** | **Accounts Officer** | `accountsofficer` | Budget head allocations, commitments, expenditure tracking, financial audits. |
-| **09** | **HOD (Dept Head)** | `hod_cse` | Departmental requisitions, tier-1 sanction approvals (< ₹5,000), lab allocations. |
+| **09** | **HOD (Dept Head)** | `hod_cse` | **Department Indent Endorsement:** Scrutinizes and endorses departmental indents & lab requisitions; forwards through VP & Principal for Management sanction. |
 | **10** | **Dept Coordinator** | `coord_cse` | Specification verification, technical scrutiny, inter-dept movement initiation. |
-| **11** | **Lab In-Charge** | `lab_ai` | Lab asset register, damage reporting, consumable usage logs, maintenance requests. |
-| **12** | **Faculty Member** | `faculty_cse` | Raising departmental requisitions, classroom equipment custody tracking. |
-| **13** | **Lab Technician** | `technician` | Equipment servicing logs, preventative maintenance, physical count audits. |
-| **14** | **Auditor (Internal/NAAC)** | `auditor` | Read-only compliance portal, physical audit discrepancies, dead stock inspection. |
+| **11** | **Lab In-Charge** | `merlinrithika21@gmail.com` | Lab asset register, legacy equipment onboarding (approx cost, no GST bills required), damage reporting, consumable usage logs. |
+| **12** | **Lab Technician** | `technician` | Equipment servicing logs, preventative maintenance, physical count audits. |
+| **13** | **Auditor (Internal/NAAC)** | `auditor` | Read-only compliance portal, physical audit discrepancies, dead stock inspection. |
+
+### Master Institutional Department Registry
+| Code | Department / Center | Scope & Facilities | Sub-Stores / Key Laboratories |
+|:---:|:---|:---|:---|
+| **CSE** | Computer Science & Engineering | Academic Dept & Labs | Linux Lab, CASE Tools Lab, Android Lab |
+| **IT** | Information Technology | Academic Dept & Labs | Network Security & App Development Lab |
+| **AIDS** | Artificial Intelligence & Data Science | Academic Dept & Labs | AI & High-Performance Computing Lab |
+| **ECE** | Electronics & Communication Eng. | Academic Dept & Labs | Communication Systems Lab, VLSI Design Lab |
+| **EEE** | Electrical & Electronics Eng. | Academic Dept & Labs | Power Electronics & Drives Lab, Control Systems Lab |
+| **MECH** | Mechanical Engineering | Academic Dept & Workshops | CAD/CAM Center, Lathe & Machine Shop, Thermal Lab |
+| **CIVIL**| Civil Engineering | Academic Dept & Testing Yards| Concrete & Highway Lab, Strength of Materials Lab |
+| **CHEM** | Chemical Engineering | Academic Dept & Labs | Chemical Reaction & Process Engineering Lab |
+| **MARINE**|Marine Engineering | Academic Dept & Simulators | Ship Simulation Bay, Engine Room Workshop |
+| **SH** | Science & Humanities | First-Year Studies | Physics Lab, Engineering Chemistry Lab, Language Lab |
+| **MBA** | Master of Business Administration | Management Studies | Business Analytics Lab, Executive Seminar Halls |
+| **MCA** | Master of Computer Applications | Computer Applications | Software Development Lab, Systems Lab |
+| **ADMIN**| Central College Administration | Principal / Management Office | Administrative Records, Management Boardroom |
+| **LIB** | **Central Dr. Zakir Husain Library** | Institutional Resource Center | Digital Library (120 terminals), Book Stacks, Reading Halls |
+| **INCUBATION**| **MSEC Incubation & Innovation Center** | Startup Cell, Makerspace & EDII| Prototyping Bay, Hardware Testing & IoT Lab, Incubation Store |
+| **EXAM** | Office of Controller of Exams (COE) | Autonomous Examinations | Confidential Printing Bay, Valuation Hall |
+| **PHYS** | Physical Education & Sports | Sports Complex & Fitness | Gymnasium, Indoor Sports Bay, Outdoor Equipment Store |
 
 ---
 
@@ -171,12 +191,30 @@ To maintain strict institutional accountability:
 * **No Public Password Reset Links or OTPs:** If an employee forgets their password, they must contact the Central IT Administrator. The administrator verifies their identity and issues a secure reset through the Admin Console.
 * **Brute-Force Lockout:** 5 consecutive failed attempts lock the account automatically, requiring administrator unlocking.
 
-### Rule 3: Monetary Approval Threshold Matrix
-All requisitions follow an automated approval ladder based on estimated value:
-* **Tier 1 (Below ₹5,000):** Requester → Dept Coordinator → HOD → Central Store Keeper.
-* **Tier 2 (₹5,001 – ₹25,000):** Tier 1 approvals + Vice Principal Sanction.
-* **Tier 3 (₹25,001 – ₹1,00,000):** Tier 2 approvals + Principal Institutional Sanction.
-* **Tier 4 (Above ₹1,00,000):** Tier 3 approvals + Director Executive Sanction.
+### Rule 3: Institutional Approval Ladder & Management Sanction Authority
+At MSEC, departmental heads (HOD) and mid-level authorities hold technical verification and administrative concurrence responsibility; **all college procurement and financial disbursements are sanctioned exclusively by Management (Directorate)**.
+* **Stage 1 (Department Origin & Need Scrutiny):** Lab In-Charge raises indent &rarr; Dept Coordinator verifies existing balances & specs &rarr; HOD scrutinizes and endorses the departmental indent.
+* **Stage 2 (Store Operational Gate):** Central Store Keeper checks warehouse buffer, generates official Approval Sheet.
+* **Stage 3 (Administrative & Academic Concurrence):** Vice Principal (Administrative review) &rarr; Principal (Institutional academic recommendation).
+* **Stage 4 (Management Final Sanction):** Director / Management reviews and grants final financial sanction and budget disbursement.
+* **Stage 5 (Fulfillment & Delivery):** Central Store Keeper issues PO/GRN and distributes items to the originating lab.
+
+### Rule 4: Departmental Scrutiny & Printable Indent Workflow (From Field Blueprint)
+Every departmental request follows a strict bottom-up verification path before reaching central administration:
+1. **Lab Level Originator (Lab In-Charge / Faculty):** Can raise requests for **New Products** (equipment, consumables) as well as **Service Requests** (maintenance, repairs, servicing).
+2. **Coordinator Verification Gate ("Check Existing"):** The Department Stock Coordinator verifies technical specifications and conducts an **existing stock inspection** across departmental stores to prevent redundant purchasing.
+3. **HOD Approval Gate:** The Head of Department scrutinizes the necessity, quota, and budget, granting departmental sanction.
+4. **Post-HOD Printable Indent Document:** Immediately upon HOD approval, the system auto-generates a formal **Printable Indent Document** detailing all item specifications, purpose, and 3-party departmental endorsement signatures (Initiator, Coordinator, HOD).
+
+### Rule 5: 5-Fold Asset Classification & Automated Consumable Stock Alerts
+To comply with NAAC Criteria 4 and college audit norms:
+1. **5 Classification Categories:** Every item and asset must be tracked under:
+   - **Consumable:** Operational items depleted through usage (toners, paper, cables, chemicals).
+   - **Non-Consumable:** Capital equipment and durable instruments with persistent tracking.
+   - **In Service:** Active, fully functional equipment deployed across labs and classrooms.
+   - **Repairable:** Faulty/damaged equipment currently under service ticket diagnosis or repair.
+   - **Dead:** Dead stock, condemned, obsolete, or beyond economic repair (BER) items awaiting auction/write-off.
+2. **Automated Consumable Low-Stock Alerts:** The system continuously monitors consumable balances. When any consumable falls to or below its minimum safety threshold, the system immediately fires an automated role notification to the Central Store Keeper and Department In-Charge to trigger replenishment.
 
 ---
 
