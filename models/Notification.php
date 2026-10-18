@@ -59,4 +59,36 @@ class Notification {
         ");
         return $stmt->execute([$userId, $roleKey, $type, $title, $message, $linkUrl]);
     }
+
+    public static function checkAndNotifyLowConsumables(): int {
+        $pdo = Database::getInstance();
+        $lowItems = $pdo->query("
+            SELECT s.available_quantity, i.item_code, i.item_name, i.min_stock, st.name as store_name
+            FROM stock s
+            JOIN items i ON s.item_id = i.id
+            JOIN stores st ON s.store_id = st.id
+            WHERE i.is_consumable = 1 AND s.available_quantity <= i.min_stock
+        ")->fetchAll(PDO::FETCH_ASSOC);
+
+        $notified = 0;
+        foreach ($lowItems as $item) {
+            $exists = $pdo->prepare("
+                SELECT COUNT(*) FROM notifications 
+                WHERE type = 'LOW_STOCK' AND message LIKE ? AND is_read = 0
+            ");
+            $exists->execute(["%{$item['item_code']}%"]);
+            if ((int)$exists->fetchColumn() === 0) {
+                self::send(
+                    'LOW_STOCK',
+                    "⚠️ Low Consumable Alert: {$item['item_name']}",
+                    "Consumable item {$item['item_name']} ({$item['item_code']}) in {$item['store_name']} has fallen to {$item['available_quantity']} (Min: {$item['min_stock']}). Replenishment requisition required.",
+                    'index.php?route=inventory',
+                    null,
+                    'store_keeper'
+                );
+                $notified++;
+            }
+        }
+        return $notified;
+    }
 }

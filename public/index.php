@@ -83,6 +83,31 @@ if (!Auth::check()) {
 $user = Auth::user();
 
 // ==========================================
+// LIGHTWEIGHT JSON API ENDPOINTS (AJAX)
+// ==========================================
+if ($route === 'api_item_surplus' && isset($_GET['item_id'])) {
+    header('Content-Type: application/json');
+    echo json_encode(Inventory::getItemSurplusMatrix((int)$_GET['item_id']));
+    exit;
+}
+
+if ($route === 'api_dept_vacant_stock' && isset($_GET['dept_id'])) {
+    header('Content-Type: application/json');
+    echo json_encode(Inventory::getDepartmentVacantStock((int)$_GET['dept_id']));
+    exit;
+}
+
+if ($route === 'api_search_vacant') {
+    header('Content-Type: application/json');
+    $q = $_GET['q'] ?? '';
+    $deptId = (isset($_GET['dept_id']) && $_GET['dept_id'] !== '' && $_GET['dept_id'] !== 'all') ? (int)$_GET['dept_id'] : null;
+    $categoryId = (isset($_GET['category_id']) && $_GET['category_id'] !== '' && $_GET['category_id'] !== 'all') ? (int)$_GET['category_id'] : null;
+    $vacantOnly = isset($_GET['vacant_only']) ? (bool)(int)$_GET['vacant_only'] : true;
+    echo json_encode(Inventory::searchVacantStock($q, $deptId, $categoryId, $vacantOnly));
+    exit;
+}
+
+// ==========================================
 // ACTION HANDLERS (POST)
 // ==========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -239,6 +264,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $newAssetId = Asset::create($assetData);
             AuditLogger::log('ASSET_REGISTERED', 'Asset Management', "Registered new asset {$assetData['asset_id']}", 'Asset', $newAssetId);
             header("Location: index.php?route=assets&msg=Asset+registered+successfully");
+            exit;
+
+        case 'onboard_existing_asset':
+            if (!Auth::can('create_asset') && !Auth::can('onboard_existing_item')) {
+                header("Location: index.php?route=unauthorized");
+                exit;
+            }
+            $deptId = !empty($_POST['dept_id']) ? (int)$_POST['dept_id'] : ($user['dept_id'] ?? 1);
+            $labId = !empty($_POST['lab_id']) ? (int)$_POST['lab_id'] : ($user['lab_id'] ?? null);
+            $assetName = trim($_POST['asset_name'] ?? '');
+            $categoryId = (int)($_POST['category_id'] ?? 6);
+            $approxCost = (float)($_POST['purchase_cost'] ?? 0);
+            
+            // Auto-generate Asset Tag if empty
+            $assetId = trim($_POST['asset_id'] ?? '');
+            if (empty($assetId)) {
+                $pdo = Database::getInstance();
+                $labCode = 'LAB';
+                if ($labId) {
+                    $lRow = $pdo->query("SELECT code FROM laboratories WHERE id = {$labId}")->fetch(PDO::FETCH_ASSOC);
+                    if ($lRow && !empty($lRow['code'])) $labCode = $lRow['code'];
+                }
+                $assetId = "MSEC-{$labCode}-LEGACY-" . strtoupper(substr(uniqid(), -4));
+            }
+
+            $assetData = [
+                'asset_id'        => $assetId,
+                'asset_name'      => $assetName,
+                'category_id'     => $categoryId,
+                'brand'           => trim($_POST['brand'] ?? ''),
+                'model'           => trim($_POST['model'] ?? ''),
+                'serial_number'   => trim($_POST['serial_number'] ?? ''),
+                'mac_address'     => trim($_POST['mac_address'] ?? null),
+                'ip_address'      => trim($_POST['ip_address'] ?? null),
+                'warranty_expiry' => null,
+                'amc_details'     => null,
+                'configuration'   => trim($_POST['configuration'] ?? ''),
+                'purchase_date'   => !empty($_POST['purchase_date']) ? $_POST['purchase_date'] : date('Y-01-01'),
+                'purchase_cost'   => $approxCost,
+                'dept_id'         => $deptId,
+                'lab_id'          => $labId,
+                'location'        => trim($_POST['location'] ?? 'Laboratory Terminal'),
+                'custodian_id'    => $user['id'],
+                'asset_status'    => $_POST['asset_status'] ?? 'Available'
+            ];
+
+            $newAssetId = Asset::create($assetData);
+            AuditLogger::log('EXISTING_EQUIPMENT_ONBOARDED', 'Laboratory Assets', "Onboarded existing legacy equipment {$assetId} ({$assetName}) with approx value ₹{$approxCost}", 'Asset', $newAssetId);
+            
+            $redirectTo = $_POST['redirect_to'] ?? 'dashboard';
+            $successMsg = urlencode("Existing equipment '{$assetName}' ({$assetId}) onboarded successfully into lab registry.");
+            if ($redirectTo === 'assets') {
+                header("Location: index.php?route=assets&msg={$successMsg}");
+            } else {
+                header("Location: index.php?route=dashboard&msg={$successMsg}");
+            }
             exit;
 
         case 'report_damage':
