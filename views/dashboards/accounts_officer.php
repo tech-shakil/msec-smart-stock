@@ -69,30 +69,30 @@ $pendingClearanceRequests = $pdo->query("
         </div>
         <div class="card-body" style="padding: 0;">
             <div class="data-table-container">
-                <table class="data-table">
+                <table class="data-table data-table-compact">
                     <thead>
                         <tr>
                             <th>Head Code</th>
-                            <th>Dept</th>
-                            <th>Category</th>
-                            <th>Allocated</th>
-                            <th>Utilized</th>
-                            <th>Available Balance</th>
+                            <th class="text-center">Dept</th>
+                            <th class="text-center">Category</th>
+                            <th class="text-right">Allocated</th>
+                            <th class="text-right">Utilized</th>
+                            <th class="text-right">Available Balance</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($budgets as $b): ?>
                             <tr>
                                 <td><code><?= htmlspecialchars($b['budget_head_code']) ?></code></td>
-                                <td><strong><?= htmlspecialchars($b['dept_code']) ?></strong></td>
-                                <td>
+                                <td class="text-center"><strong><?= htmlspecialchars($b['dept_code']) ?></strong></td>
+                                <td class="text-center">
                                     <span class="badge <?= $b['category'] === 'CAPITAL' ? 'badge-primary' : 'badge-neutral' ?>">
                                         <?= htmlspecialchars($b['category']) ?>
                                     </span>
                                 </td>
-                                <td><?= CURRENCY_SYMBOL ?><?= number_format($b['allocated_amount']) ?></td>
-                                <td><?= CURRENCY_SYMBOL ?><?= number_format($b['utilized_amount']) ?></td>
-                                <td><strong style="color: #166534;"><?= CURRENCY_SYMBOL ?><?= number_format($b['available_balance']) ?></strong></td>
+                                <td class="text-right"><?= CURRENCY_SYMBOL ?><?= number_format($b['allocated_amount']) ?></td>
+                                <td class="text-right"><?= CURRENCY_SYMBOL ?><?= number_format($b['utilized_amount']) ?></td>
+                                <td class="text-right"><strong style="color: #166534;"><?= CURRENCY_SYMBOL ?><?= number_format($b['available_balance']) ?></strong></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -105,43 +105,47 @@ $pendingClearanceRequests = $pdo->query("
     <div class="card">
         <div class="card-header">
             <div class="card-title">🔍 Requisitions Under Financial Audit</div>
-            <span class="badge badge-warning"><?= count($pendingClearanceRequests) ?> Pending Check</span>
+            <?php if (count($pendingClearanceRequests) > 0): ?>
+                <span class="badge badge-warning"><?= count($pendingClearanceRequests) ?> Pending</span>
+            <?php else: ?>
+                <span class="badge badge-success">Audited</span>
+            <?php endif; ?>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Indent</th>
-                            <th>Dept</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($pendingClearanceRequests)): ?>
+            <?php if (empty($pendingClearanceRequests)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">✅</div>
+                    <div class="empty-state-title">All Requisitions Cleared</div>
+                    <div class="empty-state-sub">Zero indents currently pending financial clearance. All requisitions have verified budget allocations.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td colspan="5" style="text-align: center; padding: 24px; color: #16a34a;">
-                                    ✓ All active requisitions have verified budget allocations.
-                                </td>
+                                <th>Indent</th>
+                                <th class="text-center">Dept</th>
+                                <th class="text-right">Amount</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Action</th>
                             </tr>
-                        <?php else: ?>
+                        </thead>
+                        <tbody>
                             <?php foreach ($pendingClearanceRequests as $pr): ?>
                                 <tr>
                                     <td><strong><?= htmlspecialchars($pr['request_code']) ?></strong></td>
-                                    <td><span class="badge badge-neutral"><?= htmlspecialchars($pr['dept_code']) ?></span></td>
-                                    <td><strong><?= CURRENCY_SYMBOL ?><?= number_format($pr['total_estimated_value']) ?></strong></td>
-                                    <td><span class="badge badge-warning"><?= htmlspecialchars($pr['status']) ?></span></td>
-                                    <td>
+                                    <td class="text-center"><span class="badge badge-neutral"><?= htmlspecialchars($pr['dept_code']) ?></span></td>
+                                    <td class="text-right"><strong><?= CURRENCY_SYMBOL ?><?= number_format($pr['total_estimated_value']) ?></strong></td>
+                                    <td class="text-center"><span class="badge badge-warning"><?= htmlspecialchars($pr['status']) ?></span></td>
+                                    <td class="text-center">
                                         <a href="index.php?route=view_request&id=<?= $pr['id'] ?>" class="btn btn-secondary btn-sm">Audit &rarr;</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

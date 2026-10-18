@@ -100,22 +100,22 @@ $activeTransfers = $pdo->query("
 <div class="stats-grid">
     <div class="stat-card warning">
         <div class="stat-title">Awaiting Store Verification</div>
-        <div class="stat-value"><?= sprintf("%02d", $pendingStoreReviews) ?></div>
+        <div class="stat-value"><?= number_format($pendingStoreReviews) ?></div>
         <div class="stat-subtext">HOD-approved indents requiring review</div>
     </div>
     <div class="stat-card primary">
         <div class="stat-title">Approval Sheets Needed</div>
-        <div class="stat-value"><?= sprintf("%02d", $pendingApprovalSheets) ?></div>
+        <div class="stat-value"><?= number_format($pendingApprovalSheets) ?></div>
         <div class="stat-subtext">Spec & price check before Principal</div>
     </div>
     <div class="stat-card danger">
         <div class="stat-title">Low Stock Buffer Alerts</div>
-        <div class="stat-value"><?= sprintf("%02d", $lowStockCount) ?></div>
+        <div class="stat-value"><?= number_format($lowStockCount) ?></div>
         <div class="stat-subtext">Items below reserve reorder point</div>
     </div>
     <div class="stat-card info">
         <div class="stat-title">Pending Shipments / GRN</div>
-        <div class="stat-value"><?= sprintf("%02d", $pendingGRNs) ?></div>
+        <div class="stat-value"><?= number_format($pendingGRNs) ?></div>
         <div class="stat-subtext">Open POs awaiting material arrival</div>
     </div>
     <div class="stat-card success">
@@ -131,44 +131,50 @@ $activeTransfers = $pdo->query("
     <div class="card">
         <div class="card-header">
             <div class="card-title">📥 Indents Under Store Review (Gateway)</div>
-            <span class="badge badge-warning"><?= count($incomingRequests) ?> Active</span>
+            <?php if (count($incomingRequests) > 0): ?>
+                <span class="badge badge-warning"><?= count($incomingRequests) ?> Active</span>
+            <?php else: ?>
+                <span class="badge badge-success">Up to Date</span>
+            <?php endif; ?>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Indent Code</th>
-                            <th>Department</th>
-                            <th>Estimated Value</th>
-                            <th>Workflow Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($incomingRequests)): ?>
+            <?php if (empty($incomingRequests)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">✅</div>
+                    <div class="empty-state-title">No Requisitions Awaiting Review</div>
+                    <div class="empty-state-sub">All department requisitions have been verified or issued. Gateway queue is clear.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td colspan="5" style="text-align: center; padding: 24px; color: #64748b;">No requisitions currently awaiting store review.</td>
+                                <th>Indent Code</th>
+                                <th class="text-center">Dept</th>
+                                <th class="text-right">Estimated Value</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Action</th>
                             </tr>
-                        <?php else: ?>
+                        </thead>
+                        <tbody>
                             <?php foreach ($incomingRequests as $req): ?>
                                 <tr>
                                     <td>
                                         <strong><?= htmlspecialchars($req['request_code']) ?></strong>
-                                        <div style="font-size: 11px; color: #64748b;"><?= htmlspecialchars(substr($req['purpose'], 0, 35)) ?>...</div>
+                                        <div style="font-size: 11px; color: #64748b;"><?= htmlspecialchars(substr($req['purpose'], 0, 30)) ?>...</div>
                                     </td>
-                                    <td><span class="badge badge-neutral"><?= htmlspecialchars($req['dept_code']) ?></span></td>
-                                    <td><strong><?= CURRENCY_SYMBOL ?><?= number_format($req['total_estimated_value']) ?></strong></td>
-                                    <td><span class="badge badge-warning"><?= htmlspecialchars($req['status']) ?></span></td>
-                                    <td>
-                                        <a href="index.php?route=view_request&id=<?= $req['id'] ?>" class="btn btn-primary btn-sm">Verify / Issue &rarr;</a>
+                                    <td class="text-center"><span class="badge badge-neutral"><?= htmlspecialchars($req['dept_code']) ?></span></td>
+                                    <td class="text-right"><strong><?= CURRENCY_SYMBOL ?><?= number_format($req['total_estimated_value']) ?></strong></td>
+                                    <td class="text-center"><span class="badge badge-warning"><?= htmlspecialchars($req['status']) ?></span></td>
+                                    <td class="text-center">
+                                        <a href="index.php?route=view_request&id=<?= $req['id'] ?>" class="btn btn-primary btn-sm">Verify &rarr;</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -179,38 +185,40 @@ $activeTransfers = $pdo->query("
             <span class="badge badge-success">Printable</span>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Sheet #</th>
-                            <th>Req Code</th>
-                            <th>Vendor Selected</th>
-                            <th>Total Cost</th>
-                            <th>Printable View</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($approvalSheets)): ?>
+            <?php if (empty($approvalSheets)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">📑</div>
+                    <div class="empty-state-title">No Approval Sheets Generated</div>
+                    <div class="empty-state-sub">Approval sheets prepared from indents will be archived here for printing and inspection.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td colspan="5" style="text-align: center; padding: 24px; color: #64748b;">No approval sheets prepared yet.</td>
+                                <th>Sheet #</th>
+                                <th>Req Code</th>
+                                <th>Vendor</th>
+                                <th class="text-right">Total Cost</th>
+                                <th class="text-center">View</th>
                             </tr>
-                        <?php else: ?>
+                        </thead>
+                        <tbody>
                             <?php foreach ($approvalSheets as $as): ?>
                                 <tr>
                                     <td><code><?= htmlspecialchars($as['sheet_number']) ?></code></td>
                                     <td><strong><?= htmlspecialchars($as['request_code']) ?></strong></td>
-                                    <td><span style="font-size: 12px;"><?= htmlspecialchars($as['vendor_name'] ?? 'Vendor Quotation') ?></span></td>
-                                    <td><strong><?= CURRENCY_SYMBOL ?><?= number_format($as['total_cost']) ?></strong></td>
-                                    <td>
-                                        <a href="index.php?route=approval_sheet&id=<?= $as['id'] ?>" class="btn btn-secondary btn-sm" target="_blank">🖨️ View Sheet</a>
+                                    <td><span style="font-size: 11.5px;"><?= htmlspecialchars($as['vendor_name'] ?? 'Vendor Quotation') ?></span></td>
+                                    <td class="text-right"><strong><?= CURRENCY_SYMBOL ?><?= number_format($as['total_cost']) ?></strong></td>
+                                    <td class="text-center">
+                                        <a href="index.php?route=approval_sheet&id=<?= $as['id'] ?>" class="btn btn-secondary btn-sm" target="_blank">🖨️ View</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
@@ -224,32 +232,40 @@ $activeTransfers = $pdo->query("
             <a href="index.php?route=inventory" class="badge badge-danger">View Full Catalog</a>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Item Code</th>
-                            <th>Item Name</th>
-                            <th>Current Stock</th>
-                            <th>Min Buffer</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($lowStockItems as $ls): ?>
+            <?php if (empty($lowStockItems)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">📦</div>
+                    <div class="empty-state-title">Stock Levels Normal</div>
+                    <div class="empty-state-sub">All central inventory items are above their reorder safety thresholds.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td><code><?= htmlspecialchars($ls['item_code']) ?></code></td>
-                                <td><strong><?= htmlspecialchars($ls['item_name']) ?></strong></td>
-                                <td><span style="color: #dc2626; font-weight: 700;"><?= number_format($ls['available_quantity']) ?> <?= htmlspecialchars($ls['unit_code']) ?></span></td>
-                                <td><?= number_format($ls['min_stock']) ?> <?= htmlspecialchars($ls['unit_code']) ?></td>
-                                <td>
-                                    <a href="index.php?route=new_request" class="btn btn-secondary btn-sm">+ Reorder Indent</a>
-                                </td>
+                                <th>Item Code</th>
+                                <th>Item Name</th>
+                                <th class="text-right">Current Stock</th>
+                                <th class="text-right">Min Buffer</th>
+                                <th class="text-center">Action</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($lowStockItems as $ls): ?>
+                                <tr>
+                                    <td><code><?= htmlspecialchars($ls['item_code']) ?></code></td>
+                                    <td><strong><?= htmlspecialchars($ls['item_name']) ?></strong></td>
+                                    <td class="text-right"><span style="color: #dc2626; font-weight: 700;"><?= number_format($ls['available_quantity']) ?> <?= htmlspecialchars($ls['unit_code']) ?></span></td>
+                                    <td class="text-right"><?= number_format($ls['min_stock']) ?> <?= htmlspecialchars($ls['unit_code']) ?></td>
+                                    <td class="text-center">
+                                        <a href="index.php?route=new_request" class="btn btn-secondary btn-sm">+ Reorder</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -260,35 +276,43 @@ $activeTransfers = $pdo->query("
             <a href="index.php?route=movement" class="badge badge-primary">Transfer Ledger</a>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Transfer #</th>
-                            <th>Routing</th>
-                            <th>Status</th>
-                            <th>Initiator</th>
-                            <th>Control</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($activeTransfers as $tr): ?>
+            <?php if (empty($activeTransfers)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">🔄</div>
+                    <div class="empty-state-title">No Active Transfers</div>
+                    <div class="empty-state-sub">No inter-department stock movements currently in transit or awaiting approval.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td><code><?= htmlspecialchars($tr['movement_code']) ?></code></td>
-                                <td>
-                                    <strong><?= htmlspecialchars($tr['src_code'] ?? 'Central') ?></strong> &rarr; 
-                                    <strong><?= htmlspecialchars($tr['tgt_code'] ?? 'Dept') ?></strong>
-                                </td>
-                                <td><span class="badge badge-warning"><?= htmlspecialchars($tr['status']) ?></span></td>
-                                <td><span style="font-size: 11.5px;"><?= htmlspecialchars($tr['initiator_name']) ?></span></td>
-                                <td>
-                                    <a href="index.php?route=movement" class="btn btn-secondary btn-sm">Inspect</a>
-                                </td>
+                                <th>Transfer #</th>
+                                <th>Routing</th>
+                                <th class="text-center">Status</th>
+                                <th>Initiator</th>
+                                <th class="text-center">Control</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($activeTransfers as $tr): ?>
+                                <tr>
+                                    <td><code><?= htmlspecialchars($tr['movement_code']) ?></code></td>
+                                    <td>
+                                        <strong><?= htmlspecialchars($tr['src_code'] ?? 'Central') ?></strong> &rarr; 
+                                        <strong><?= htmlspecialchars($tr['tgt_code'] ?? 'Dept') ?></strong>
+                                    </td>
+                                    <td class="text-center"><span class="badge badge-warning"><?= htmlspecialchars($tr['status']) ?></span></td>
+                                    <td><span style="font-size: 11.5px;"><?= htmlspecialchars($tr['initiator_name']) ?></span></td>
+                                    <td class="text-center">
+                                        <a href="index.php?route=movement" class="btn btn-secondary btn-sm">Inspect</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

@@ -49,8 +49,8 @@ $recentSanctions = $pdo->query("
 
 <div class="page-header">
     <div>
-        <h2 class="page-title">Executive Directorate & Trust Governance Dashboard</h2>
-        <div class="page-desc">Director: <strong><?= htmlspecialchars($user['full_name']) ?></strong> &bull; Complete Institutional Oversight &bull; <?= APP_INSTITUTION ?></div>
+        <h2 class="page-title">Executive Directorate & Management Sanction Console</h2>
+        <div class="page-desc">Director: <strong><?= htmlspecialchars($user['full_name']) ?></strong> &bull; Ultimate Institutional Financial Sanction & Trust Authority &bull; <?= APP_INSTITUTION ?></div>
     </div>
     <div style="display: flex; gap: 10px;">
         <a href="index.php?route=reports" class="btn btn-secondary">📈 Statutory Audit & NAAC/NBA Reports</a>
@@ -70,9 +70,9 @@ $recentSanctions = $pdo->query("
         <div class="stat-subtext"><?= number_format($totalAssets) ?> Tagged Physical & IT Assets</div>
     </div>
     <div class="stat-card warning">
-        <div class="stat-title">Major Capital Sanctions (> ₹1L)</div>
-        <div class="stat-value"><?= sprintf("%02d", $pendingCapitalSanctions) ?></div>
-        <div class="stat-subtext">Awaiting Director trust clearance</div>
+        <div class="stat-title">Institutional Sanctions Queue</div>
+        <div class="stat-value"><?= number_format($pendingCapitalSanctions) ?></div>
+        <div class="stat-subtext">Awaiting Management final approval & fund release</div>
     </div>
     <div class="stat-card success">
         <div class="stat-title">Annual Budget Allocation</div>
@@ -82,48 +82,54 @@ $recentSanctions = $pdo->query("
 </div>
 
 <div class="responsive-split-grid">
-    <!-- Major Capital Sanction Queue -->
+    <!-- Management Sanction Queue -->
     <div class="card">
         <div class="card-header">
-            <div class="card-title">🏛️ Major Capital Procurements (> ₹1,00,000)</div>
-            <span class="badge badge-warning">Executive Authority</span>
+            <div class="card-title">🏛️ Institutional Procurements Awaiting Management Sanction</div>
+            <?php if (count($capitalRequests) > 0): ?>
+                <span class="badge badge-warning"><?= count($capitalRequests) ?> Under Review</span>
+            <?php else: ?>
+                <span class="badge badge-success">Clear</span>
+            <?php endif; ?>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Requisition #</th>
-                            <th>Department</th>
-                            <th>Estimated Value</th>
-                            <th>Lifecycle Status</th>
-                            <th>Inspect Lifecycle</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($capitalRequests)): ?>
+            <?php if (empty($capitalRequests)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">🏛️</div>
+                    <div class="empty-state-title">No Major Sanctions Pending</div>
+                    <div class="empty-state-sub">Zero high-value capital procurements (> ₹1,00,000) currently awaiting directorate review.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td colspan="5" style="text-align: center; padding: 24px; color: #64748b;">No high-value capital requests currently pending directorate review.</td>
+                                <th>Requisition #</th>
+                                <th class="text-center">Dept</th>
+                                <th class="text-right">Estimated Value</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Action</th>
                             </tr>
-                        <?php else: ?>
+                        </thead>
+                        <tbody>
                             <?php foreach ($capitalRequests as $cr): ?>
                                 <tr>
                                     <td>
                                         <strong><?= htmlspecialchars($cr['request_code']) ?></strong>
-                                        <div style="font-size: 11px; color: #64748b;"><?= htmlspecialchars(substr($cr['purpose'], 0, 35)) ?>...</div>
+                                        <div style="font-size: 11px; color: #64748b;"><?= htmlspecialchars(substr($cr['purpose'], 0, 30)) ?>...</div>
                                     </td>
-                                    <td><span class="badge badge-neutral"><?= htmlspecialchars($cr['dept_code']) ?></span></td>
-                                    <td><strong><?= CURRENCY_SYMBOL ?><?= number_format($cr['total_estimated_value']) ?></strong></td>
-                                    <td><span class="badge badge-warning"><?= htmlspecialchars($cr['status']) ?></span></td>
-                                    <td>
-                                        <a href="index.php?route=view_request&id=<?= $cr['id'] ?>" class="btn btn-primary btn-sm">Full History &rarr;</a>
+                                    <td class="text-center"><span class="badge badge-neutral"><?= htmlspecialchars($cr['dept_code']) ?></span></td>
+                                    <td class="text-right"><strong><?= CURRENCY_SYMBOL ?><?= number_format($cr['total_estimated_value']) ?></strong></td>
+                                    <td class="text-center"><span class="badge badge-warning"><?= htmlspecialchars($cr['status']) ?></span></td>
+                                    <td class="text-center">
+                                        <a href="index.php?route=view_request&id=<?= $cr['id'] ?>" class="btn btn-primary btn-sm">Inspect &rarr;</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -135,14 +141,14 @@ $recentSanctions = $pdo->query("
         </div>
         <div class="card-body" style="padding: 0;">
             <div class="data-table-container">
-                <table class="data-table">
+                <table class="data-table data-table-compact">
                     <thead>
                         <tr>
                             <th>Dept Code</th>
                             <th>Head</th>
-                            <th>Allocated</th>
-                            <th>Utilized</th>
-                            <th>Balance</th>
+                            <th class="text-right">Allocated</th>
+                            <th class="text-right">Utilized</th>
+                            <th class="text-right">Balance</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -152,12 +158,12 @@ $recentSanctions = $pdo->query("
                             <tr>
                                 <td><strong><?= htmlspecialchars($b['dept_code']) ?></strong></td>
                                 <td><span style="font-size: 11px;"><code><?= htmlspecialchars($b['budget_head_code']) ?></code></span></td>
-                                <td><?= CURRENCY_SYMBOL ?><?= number_format($b['allocated_amount']) ?></td>
-                                <td>
+                                <td class="text-right"><?= CURRENCY_SYMBOL ?><?= number_format($b['allocated_amount']) ?></td>
+                                <td class="text-right">
                                     <?= CURRENCY_SYMBOL ?><?= number_format($b['utilized_amount']) ?>
                                     <div style="font-size: 10px; color: #64748b;"><?= $pct ?>% used</div>
                                 </td>
-                                <td><strong style="color: #166534;"><?= CURRENCY_SYMBOL ?><?= number_format($b['available_balance']) ?></strong></td>
+                                <td class="text-right"><strong style="color: #166534;"><?= CURRENCY_SYMBOL ?><?= number_format($b['available_balance']) ?></strong></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

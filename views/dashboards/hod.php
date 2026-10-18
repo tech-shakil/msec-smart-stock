@@ -49,8 +49,8 @@ $deptAssets = $pdo->query("
 
 <div class="page-header">
     <div>
-        <h2 class="page-title">Department Head Authorization Dashboard</h2>
-        <div class="page-desc">HOD: <strong><?= htmlspecialchars($user['full_name']) ?></strong> &bull; Department of <?= htmlspecialchars($user['dept_name'] ?? 'Computer Science & Engineering') ?> (<?= htmlspecialchars($user['dept_code'] ?? 'CSE') ?>)</div>
+        <h2 class="page-title">Department Head Requisition & Endorsement Dashboard</h2>
+        <div class="page-desc">HOD: <strong><?= htmlspecialchars($user['full_name']) ?></strong> &bull; Department of <?= htmlspecialchars($user['dept_name'] ?? 'Computer Science & Engineering') ?> (<?= htmlspecialchars($user['dept_code'] ?? 'CSE') ?>) &bull; Endorses indents for institutional review and Management sanction.</div>
     </div>
     <div style="display: flex; gap: 10px;">
         <a href="index.php?route=new_request" class="btn btn-primary">+ Raise Department Requisition</a>
@@ -60,9 +60,9 @@ $deptAssets = $pdo->query("
 <!-- HOD Department KPIs -->
 <div class="stats-grid">
     <div class="stat-card warning">
-        <div class="stat-title">Awaiting HOD Authorization</div>
-        <div class="stat-value"><?= sprintf("%02d", $pendingHODApprovals) ?></div>
-        <div class="stat-subtext">Verified by coordinator; awaiting your sign-off</div>
+        <div class="stat-title">Awaiting HOD Endorsement</div>
+        <div class="stat-value"><?= number_format($pendingHODApprovals) ?></div>
+        <div class="stat-subtext">Verified by coordinator; awaiting your endorsement</div>
     </div>
     <div class="stat-card primary">
         <div class="stat-title">Department Holdings Value</div>
@@ -71,13 +71,13 @@ $deptAssets = $pdo->query("
     </div>
     <div class="stat-card info">
         <div class="stat-title">Registered Lab Assets</div>
-        <div class="stat-value"><?= sprintf("%02d", $deptAssetsCount) ?></div>
+        <div class="stat-value"><?= number_format($deptAssetsCount) ?></div>
         <div class="stat-subtext">Serialized computing systems & instruments</div>
     </div>
     <div class="stat-card success">
         <div class="stat-title">Next Workflow Gate</div>
-        <div class="stat-value" style="font-size: 16px; font-weight: 700;">STORE KEEPER</div>
-        <div class="stat-subtext">All HOD approvals route to Store Gateway</div>
+        <div class="stat-value" style="font-size: 18px; font-weight: 800;">STORE & EXECUTIVE</div>
+        <div class="stat-subtext">Routes to Store & Management Sanction Ladder</div>
     </div>
 </div>
 
@@ -85,29 +85,33 @@ $deptAssets = $pdo->query("
     <!-- Requisitions Queue Requiring HOD Action -->
     <div class="card">
         <div class="card-header">
-            <div class="card-title">📝 Department Requisitions Awaiting Authorization</div>
-            <span class="badge badge-warning"><?= count($hodRequests) ?> Pending</span>
+            <div class="card-title">📝 Department Requisitions Awaiting Endorsement</div>
+            <?php if (count($hodRequests) > 0): ?>
+                <span class="badge badge-warning"><?= count($hodRequests) ?> Pending</span>
+            <?php else: ?>
+                <span class="badge badge-success">Up to Date</span>
+            <?php endif; ?>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Indent Code</th>
-                            <th>Staff / Lab</th>
-                            <th>Purpose</th>
-                            <th>Est. Value</th>
-                            <th>HOD Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($hodRequests)): ?>
+            <?php if (empty($hodRequests)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">✅</div>
+                    <div class="empty-state-title">All Requisitions Authorized</div>
+                    <div class="empty-state-sub">Zero department indents are pending your review. All requisitions have been processed and forwarded.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td colspan="5" style="text-align: center; padding: 24px; color: #16a34a;">
-                                    ✓ All department requisitions verified. Zero pending items.
-                                </td>
+                                <th>Indent Code</th>
+                                <th>Staff / Lab</th>
+                                <th>Purpose</th>
+                                <th class="text-right">Est. Value</th>
+                                <th class="text-center">Action</th>
                             </tr>
-                        <?php else: ?>
+                        </thead>
+                        <tbody>
                             <?php foreach ($hodRequests as $hr): ?>
                                 <tr>
                                     <td><strong><?= htmlspecialchars($hr['request_code']) ?></strong></td>
@@ -116,16 +120,16 @@ $deptAssets = $pdo->query("
                                         <div style="font-size: 11px; color: #64748b;"><?= htmlspecialchars($hr['lab_name'] ?? 'General') ?></div>
                                     </td>
                                     <td style="font-size: 12px;"><?= htmlspecialchars(substr($hr['purpose'], 0, 30)) ?>...</td>
-                                    <td><strong><?= CURRENCY_SYMBOL ?><?= number_format($hr['total_estimated_value']) ?></strong></td>
-                                    <td>
+                                    <td class="text-right"><strong><?= CURRENCY_SYMBOL ?><?= number_format($hr['total_estimated_value']) ?></strong></td>
+                                    <td class="text-center">
                                         <a href="index.php?route=view_request&id=<?= $hr['id'] ?>" class="btn btn-primary btn-sm">Authorize &rarr;</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -136,35 +140,43 @@ $deptAssets = $pdo->query("
             <a href="index.php?route=assets" class="badge badge-primary">View All</a>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Asset Tag</th>
-                            <th>Equipment</th>
-                            <th>Lab Location</th>
-                            <th>Condition</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($deptAssets as $da): ?>
+            <?php if (empty($deptAssets)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">💻</div>
+                    <div class="empty-state-title">No Lab Assets Registered</div>
+                    <div class="empty-state-sub">Department computing systems and laboratory equipment will appear here once allocated or registered.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td><code><?= htmlspecialchars($da['asset_id']) ?></code></td>
-                                <td>
-                                    <strong><?= htmlspecialchars($da['asset_name']) ?></strong>
-                                    <div style="font-size: 10.5px; color: #64748b;"><?= htmlspecialchars($da['brand']) ?> <?= htmlspecialchars($da['model']) ?></div>
-                                </td>
-                                <td style="font-size: 11.5px;"><?= htmlspecialchars($da['location']) ?></td>
-                                <td>
-                                    <span class="badge <?= $da['asset_status'] === 'In Use' ? 'badge-success' : 'badge-warning' ?>">
-                                        <?= htmlspecialchars($da['asset_status']) ?>
-                                    </span>
-                                </td>
+                                <th>Asset Tag</th>
+                                <th>Equipment</th>
+                                <th>Lab Location</th>
+                                <th class="text-center">Condition</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($deptAssets as $da): ?>
+                                <tr>
+                                    <td><code><?= htmlspecialchars($da['asset_id']) ?></code></td>
+                                    <td>
+                                        <strong><?= htmlspecialchars($da['asset_name']) ?></strong>
+                                        <div style="font-size: 10.5px; color: #64748b;"><?= htmlspecialchars($da['brand']) ?> <?= htmlspecialchars($da['model']) ?></div>
+                                    </td>
+                                    <td style="font-size: 11.5px;"><?= htmlspecialchars($da['location']) ?></td>
+                                    <td class="text-center">
+                                        <span class="badge <?= $da['asset_status'] === 'In Use' ? 'badge-success' : 'badge-warning' ?>">
+                                            <?= htmlspecialchars($da['asset_status']) ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

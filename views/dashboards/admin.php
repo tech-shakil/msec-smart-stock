@@ -71,14 +71,14 @@ $usersList = $pdo->query("
         </div>
         <div class="card-body" style="padding: 0;">
             <div class="data-table-container">
-                <table class="data-table">
+                <table class="data-table data-table-compact">
                     <thead>
                         <tr>
                             <th>User</th>
-                            <th>Role</th>
-                            <th>Dept</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th class="text-center">Role</th>
+                            <th class="text-center">Dept</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,9 +88,9 @@ $usersList = $pdo->query("
                                     <strong><?= htmlspecialchars($u['full_name']) ?></strong>
                                     <div style="font-size: 11px; color: #64748b;"><code>@<?= htmlspecialchars($u['username']) ?></code></div>
                                 </td>
-                                <td><span class="badge badge-primary"><?= htmlspecialchars(ROLES[$u['role_key']]['name'] ?? $u['role_key']) ?></span></td>
-                                <td><strong><?= htmlspecialchars($u['dept_code'] ?? 'Central') ?></strong></td>
-                                <td>
+                                <td class="text-center"><span class="badge badge-primary"><?= htmlspecialchars(ROLES[$u['role_key']]['name'] ?? $u['role_key']) ?></span></td>
+                                <td class="text-center"><strong><?= htmlspecialchars($u['dept_code'] ?? 'Central') ?></strong></td>
+                                <td class="text-center">
                                     <?php if ($u['status'] === 'Locked'): ?>
                                         <span class="badge badge-danger">Locked</span>
                                     <?php elseif ($u['status'] === 'Active'): ?>
@@ -99,7 +99,7 @@ $usersList = $pdo->query("
                                         <span class="badge badge-neutral">Inactive</span>
                                     <?php endif; ?>
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     <a href="index.php?route=admin_users" class="btn btn-secondary btn-sm">Manage</a>
                                 </td>
                             </tr>
@@ -111,21 +111,21 @@ $usersList = $pdo->query("
     </div>
 
     <!-- Security Activity & System Settings Links -->
-    <div>
-        <div class="card" style="margin-bottom: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="card">
             <div class="card-header">
                 <div class="card-title">🛡️ Security & Authentication Events</div>
                 <a href="index.php?route=admin_audit" class="badge badge-secondary">Full Log</a>
             </div>
             <div class="card-body" style="padding: 0;">
                 <div class="data-table-container">
-                    <table class="data-table">
+                    <table class="data-table data-table-compact">
                         <thead>
                             <tr>
                                 <th>Time</th>
                                 <th>Action</th>
                                 <th>Actor</th>
-                                <th>IP</th>
+                                <th class="text-right">IP</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -134,7 +134,7 @@ $usersList = $pdo->query("
                                     <td style="font-size: 11px;"><?= date('H:i:s', strtotime($sl['created_at'])) ?></td>
                                     <td><code><?= htmlspecialchars($sl['action']) ?></code></td>
                                     <td><strong><?= htmlspecialchars($sl['username'] ?? 'System') ?></strong></td>
-                                    <td><code><?= htmlspecialchars($sl['ip_address'] ?? '127.0.0.1') ?></code></td>
+                                    <td class="text-right"><code><?= htmlspecialchars($sl['ip_address'] ?? '127.0.0.1') ?></code></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

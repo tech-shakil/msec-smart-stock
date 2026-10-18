@@ -1,8 +1,8 @@
 <?php
 /**
  * MSEC SMART STOCK - Principal Institutional Dashboard
- * Section 6: College-Wide Academic & Financial Sanctions (> ₹25,000),
- * Store-Verified Approval Sheets Queue, and Institutional Compliance.
+ * Section 6: College-Wide Academic & Institutional Concurrence,
+ * Store-Verified Approval Sheets Queue, and Recommendation to Management.
  */
 
 $pdo = Database::getInstance();
@@ -59,23 +59,23 @@ $decisionHistory = $pdo->query("
 <!-- Principal KPIs -->
 <div class="stats-grid">
     <div class="stat-card danger">
-        <div class="stat-title">Awaiting Principal Sanction</div>
-        <div class="stat-value"><?= sprintf("%02d", $pendingPrincipalApprovals) ?></div>
-        <div class="stat-subtext">High-value requisitions (> ₹25,000)</div>
+        <div class="stat-title">Awaiting Institutional Review</div>
+        <div class="stat-value"><?= number_format($pendingPrincipalApprovals) ?></div>
+        <div class="stat-subtext">For academic concurrence & submission to Management</div>
     </div>
     <div class="stat-card primary">
         <div class="stat-title">Store-Verified Approval Sheets</div>
-        <div class="stat-value"><?= sprintf("%02d", $storeVerifiedQueue) ?></div>
+        <div class="stat-value"><?= number_format($storeVerifiedQueue) ?></div>
         <div class="stat-subtext">Price & spec checks confirmed by Store</div>
     </div>
     <div class="stat-card info">
         <div class="stat-title">Academic Departments</div>
-        <div class="stat-value"><?= sprintf("%02d", $totalDepts) ?></div>
+        <div class="stat-value"><?= number_format($totalDepts) ?></div>
         <div class="stat-subtext">CSE, ECE, EEE, MECH, CIVIL & Admin</div>
     </div>
     <div class="stat-card warning">
         <div class="stat-title">Active Equipment Service Tickets</div>
-        <div class="stat-value"><?= sprintf("%02d", $openTickets) ?></div>
+        <div class="stat-value"><?= number_format($openTickets) ?></div>
         <div class="stat-subtext">Under repair in technician bay</div>
     </div>
 </div>
@@ -84,38 +84,42 @@ $decisionHistory = $pdo->query("
     <!-- Institutional Approval Queue -->
     <div class="card">
         <div class="card-header">
-            <div class="card-title">📝 High-Value Approval Queue (> ₹25,000)</div>
-            <span class="badge badge-danger"><?= count($approvalQueue) ?> Action Required</span>
+            <div class="card-title">📝 Institutional Review & Recommendation Queue</div>
+            <?php if (count($approvalQueue) > 0): ?>
+                <span class="badge badge-danger"><?= count($approvalQueue) ?> Action Required</span>
+            <?php else: ?>
+                <span class="badge badge-success">Queue Clear</span>
+            <?php endif; ?>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Indent Code</th>
-                            <th>Dept</th>
-                            <th>Sanction Value</th>
-                            <th>Store Verification</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($approvalQueue)): ?>
+            <?php if (empty($approvalQueue)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">✅</div>
+                    <div class="empty-state-title">All Sanctions Cleared</div>
+                    <div class="empty-state-sub">Zero high-value department indents are awaiting institutional authorization. All queues are up to date.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td colspan="5" style="text-align: center; padding: 28px; color: #16a34a;">
-                                    ✓ All high-value requisitions cleared. No pending approvals in queue.
-                                </td>
+                                <th>Indent Code</th>
+                                <th class="text-center">Dept</th>
+                                <th class="text-right">Sanction Value</th>
+                                <th class="text-center">Store Verification</th>
+                                <th class="text-center">Action</th>
                             </tr>
-                        <?php else: ?>
+                        </thead>
+                        <tbody>
                             <?php foreach ($approvalQueue as $aq): ?>
                                 <tr>
                                     <td>
                                         <strong><?= htmlspecialchars($aq['request_code']) ?></strong>
-                                        <div style="font-size: 11px; color: #64748b;"><?= htmlspecialchars(substr($aq['purpose'], 0, 35)) ?>...</div>
+                                        <div style="font-size: 11px; color: #64748b;"><?= htmlspecialchars(substr($aq['purpose'], 0, 32)) ?>...</div>
                                     </td>
-                                    <td><span class="badge badge-neutral"><?= htmlspecialchars($aq['dept_code']) ?></span></td>
-                                    <td><strong><?= CURRENCY_SYMBOL ?><?= number_format($aq['total_estimated_value']) ?></strong></td>
-                                    <td>
+                                    <td class="text-center"><span class="badge badge-neutral"><?= htmlspecialchars($aq['dept_code']) ?></span></td>
+                                    <td class="text-right"><strong><?= CURRENCY_SYMBOL ?><?= number_format($aq['total_estimated_value']) ?></strong></td>
+                                    <td class="text-center">
                                         <?php if (!empty($aq['sheet_number'])): ?>
                                             <a href="index.php?route=approval_sheet&id=<?= $aq['id'] ?>" class="badge badge-success" target="_blank">
                                                 ✓ <?= htmlspecialchars($aq['sheet_number']) ?>
@@ -124,57 +128,59 @@ $decisionHistory = $pdo->query("
                                             <span class="badge badge-warning">Awaiting Sheet</span>
                                         <?php endif; ?>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <a href="index.php?route=view_request&id=<?= $aq['id'] ?>" class="btn btn-primary btn-sm">Inspect & Sanction &rarr;</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
     <!-- Right Side: Recent Decisions & Policy -->
-    <div>
-        <div class="card" style="margin-bottom: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="card">
             <div class="card-header">
                 <div class="card-title">📜 Recent Institutional Decisions</div>
             </div>
             <div class="card-body" style="padding: 0;">
-                <div class="data-table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Req Code</th>
-                                <th>Decision</th>
-                                <th>Remarks</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($decisionHistory)): ?>
+                <?php if (empty($decisionHistory)): ?>
+                    <div class="empty-state-card">
+                        <div class="empty-state-icon">📜</div>
+                        <div class="empty-state-title">No Decision Records Yet</div>
+                        <div class="empty-state-sub">Institutional decisions and sanctions signed by the Principal will appear in this ledger.</div>
+                    </div>
+                <?php else: ?>
+                    <div class="data-table-container">
+                        <table class="data-table data-table-compact">
+                            <thead>
                                 <tr>
-                                    <td colspan="4" style="text-align: center; padding: 20px; color: #64748b;">No recent decision records.</td>
+                                    <th>Req Code</th>
+                                    <th class="text-center">Decision</th>
+                                    <th>Remarks</th>
+                                    <th class="text-right">Date</th>
                                 </tr>
-                            <?php else: ?>
+                            </thead>
+                            <tbody>
                                 <?php foreach ($decisionHistory as $dh): ?>
                                     <tr>
                                         <td><strong><?= htmlspecialchars($dh['request_code']) ?></strong></td>
-                                        <td>
+                                        <td class="text-center">
                                             <span class="badge <?= $dh['status'] === 'Approved' ? 'badge-success' : 'badge-danger' ?>">
                                                 <?= htmlspecialchars($dh['status']) ?>
                                             </span>
                                         </td>
                                         <td style="font-size: 11.5px;"><?= htmlspecialchars($dh['comments'] ?? 'Sanctioned') ?></td>
-                                        <td style="font-size: 11px;"><?= date('d M', strtotime($dh['action_date'])) ?></td>
+                                        <td class="text-right" style="font-size: 11px;"><?= date('d M', strtotime($dh['action_date'])) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -183,8 +189,7 @@ $decisionHistory = $pdo->query("
                 <div class="card-title">Institutional Approval Powers</div>
             </div>
             <div class="card-body" style="font-size: 12.5px; line-height: 1.5; color: #334155;">
-                <div style="margin-bottom: 8px;"><strong>Tier 3 (₹25,001 - ₹1,00,000):</strong> Full sanction authority following Store Keeper price audit.</div>
-                <div><strong>Tier 4 (> ₹1,00,000):</strong> Principal institutional concurrence + Director trust approval required.</div>
+                <div><strong>Tier 3 (Above ₹25,001):</strong> Full institutional sanction authority following Store Keeper price audit and Vice Principal concurrence.</div>
             </div>
         </div>
     </div>

@@ -20,7 +20,6 @@ $dashboardFile = match ($role) {
     'hod'                 => __DIR__ . '/../dashboards/hod.php',
     'dept_coordinator'    => __DIR__ . '/../dashboards/coordinator.php',
     'lab_incharge'        => __DIR__ . '/../dashboards/lab_incharge.php',
-    'faculty'             => __DIR__ . '/../dashboards/faculty.php',
     'technician'          => __DIR__ . '/../dashboards/technician.php',
     'auditor'             => __DIR__ . '/../dashboards/auditor.php',
     default               => __DIR__ . '/../dashboards/store_keeper.php'

@@ -34,17 +34,17 @@ $completed = $pdo->query("
 <div class="stats-grid">
     <div class="stat-card danger">
         <div class="stat-title">Active Service Tickets</div>
-        <div class="stat-value"><?= sprintf("%02d", $kpis['open_tickets']) ?></div>
+        <div class="stat-value"><?= number_format($kpis['open_tickets']) ?></div>
         <div class="stat-subtext">Hardware faults in repair queue</div>
     </div>
     <div class="stat-card warning">
         <div class="stat-title">Units Under Repair</div>
-        <div class="stat-value"><?= sprintf("%02d", $kpis['assets_under_repair']) ?></div>
+        <div class="stat-value"><?= number_format($kpis['assets_under_repair']) ?></div>
         <div class="stat-subtext">Components disassembled on workbench</div>
     </div>
     <div class="stat-card success">
         <div class="stat-title">Repairs Completed (This Term)</div>
-        <div class="stat-value"><?= sprintf("%02d", $kpis['completed_tickets']) ?></div>
+        <div class="stat-value"><?= number_format($kpis['completed_tickets']) ?></div>
         <div class="stat-subtext">Restored to active laboratory service</div>
     </div>
     <div class="stat-card primary">
@@ -62,25 +62,25 @@ $completed = $pdo->query("
             <span class="badge badge-danger"><?= $kpis['open_tickets'] ?> Requiring Action</span>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Ticket #</th>
-                            <th>Equipment / Tag</th>
-                            <th>Reported Problem</th>
-                            <th>Status</th>
-                            <th>Workbench Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($tickets)): ?>
+            <?php if (empty($tickets)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">✅</div>
+                    <div class="empty-state-title">No Active Service Tickets</div>
+                    <div class="empty-state-sub">Zero outstanding service tickets. All laboratory computing and electronic equipment functioning normally.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td colspan="5" style="text-align: center; padding: 24px; color: #16a34a;">
-                                    ✓ Zero outstanding service tickets. All laboratory equipment functioning normally.
-                                </td>
+                                <th>Ticket #</th>
+                                <th>Equipment / Tag</th>
+                                <th>Reported Problem</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Workbench Action</th>
                             </tr>
-                        <?php else: ?>
+                        </thead>
+                        <tbody>
                             <?php foreach ($tickets as $t): ?>
                                 <tr>
                                     <td><code><?= htmlspecialchars($t['ticket_number']) ?></code></td>
@@ -91,22 +91,22 @@ $completed = $pdo->query("
                                     <td style="font-size: 12px; max-width: 220px;">
                                         <?= htmlspecialchars(substr($t['issue_reported'], 0, 45)) ?>...
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <span class="badge <?= $t['status'] === 'Repaired' ? 'badge-success' : 'badge-warning' ?>">
                                             <?= htmlspecialchars($t['status']) ?>
                                         </span>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <button type="button" class="btn btn-primary btn-sm" onclick="openUpdateTicketModal(<?= $t['id'] ?>, '<?= htmlspecialchars(addslashes($t['ticket_number'])) ?>', '<?= htmlspecialchars(addslashes($t['asset_name'])) ?>', '<?= htmlspecialchars(addslashes($t['issue_reported'])) ?>', '<?= htmlspecialchars(addslashes($t['diagnosis'] ?? '')) ?>', '<?= $t['repair_cost'] ?>', '<?= $t['status'] ?>')">
                                             Update Ticket &rarr;
                                         </button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -117,22 +117,24 @@ $completed = $pdo->query("
             <span class="badge badge-success">Quality Inspected</span>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Ticket</th>
-                            <th>Equipment</th>
-                            <th>Parts Cost</th>
-                            <th>Resolution</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($completed)): ?>
+            <?php if (empty($completed)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">🔧</div>
+                    <div class="empty-state-title">No Recent Repaired Units</div>
+                    <div class="empty-state-sub">Completed repair logs with diagnosis notes and parts cost will be archived here.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td colspan="4" style="text-align: center; padding: 20px; color: #64748b;">No recent repaired tickets recorded.</td>
+                                <th>Ticket</th>
+                                <th>Equipment</th>
+                                <th class="text-right">Parts Cost</th>
+                                <th>Resolution</th>
                             </tr>
-                        <?php else: ?>
+                        </thead>
+                        <tbody>
                             <?php foreach ($completed as $c): ?>
                                 <tr>
                                     <td><code><?= htmlspecialchars($c['ticket_number']) ?></code></td>
@@ -140,14 +142,14 @@ $completed = $pdo->query("
                                         <strong><?= htmlspecialchars($c['asset_name']) ?></strong>
                                         <div style="font-size: 10.5px; color: #64748b;"><?= htmlspecialchars($c['asset_tag']) ?></div>
                                     </td>
-                                    <td><?= CURRENCY_SYMBOL ?><?= number_format($c['repair_cost']) ?></td>
+                                    <td class="text-right"><?= CURRENCY_SYMBOL ?><?= number_format($c['repair_cost']) ?></td>
                                     <td style="font-size: 11.5px;"><?= htmlspecialchars(substr($c['resolution_notes'] ?? 'Restored', 0, 25)) ?></td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

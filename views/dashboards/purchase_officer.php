@@ -48,17 +48,17 @@ $quotes = $pdo->query("
 <div class="stats-grid">
     <div class="stat-card primary">
         <div class="stat-title">Active Approved Vendors</div>
-        <div class="stat-value"><?= sprintf("%02d", $vendorCount) ?></div>
+        <div class="stat-value"><?= number_format($vendorCount) ?></div>
         <div class="stat-subtext">Registered with verified GSTIN/PAN</div>
     </div>
     <div class="stat-card warning">
         <div class="stat-title">Open Purchase Orders</div>
-        <div class="stat-value"><?= sprintf("%02d", $openPOs) ?></div>
+        <div class="stat-value"><?= number_format($openPOs) ?></div>
         <div class="stat-subtext">Issued POs awaiting material delivery</div>
     </div>
     <div class="stat-card info">
         <div class="stat-title">Quotations in Pipeline</div>
-        <div class="stat-value"><?= sprintf("%02d", $pendingQuotes) ?></div>
+        <div class="stat-value"><?= number_format($pendingQuotes) ?></div>
         <div class="stat-subtext">Under commercial comparison</div>
     </div>
     <div class="stat-card success">
@@ -76,34 +76,42 @@ $quotes = $pdo->query("
             <a href="index.php?route=procurement" class="badge badge-primary">Manage Quotes</a>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Quote Ref</th>
-                            <th>Vendor</th>
-                            <th>Total Quote (₹)</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($quotes as $q): ?>
+            <?php if (empty($quotes)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">📊</div>
+                    <div class="empty-state-title">No Quotations Under Review</div>
+                    <div class="empty-state-sub">Commercial quotation bids from vendors will be compared here for L1 selection.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td><code><?= htmlspecialchars($q['quote_reference']) ?></code></td>
-                                <td><strong><?= htmlspecialchars($q['vendor_name']) ?></strong></td>
-                                <td><?= CURRENCY_SYMBOL ?><?= number_format($q['total_amount'], 2) ?></td>
-                                <td>
-                                    <?php if ($q['is_selected']): ?>
-                                        <span class="badge badge-success">✓ Selected (L1)</span>
-                                    <?php else: ?>
-                                        <span class="badge badge-neutral">Competing</span>
-                                    <?php endif; ?>
-                                </td>
+                                <th>Quote Ref</th>
+                                <th>Vendor</th>
+                                <th class="text-right">Total Quote (₹)</th>
+                                <th class="text-center">Status</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($quotes as $q): ?>
+                                <tr>
+                                    <td><code><?= htmlspecialchars($q['quote_reference']) ?></code></td>
+                                    <td><strong><?= htmlspecialchars($q['vendor_name']) ?></strong></td>
+                                    <td class="text-right"><?= CURRENCY_SYMBOL ?><?= number_format($q['total_amount'], 2) ?></td>
+                                    <td class="text-center">
+                                        <?php if ($q['is_selected']): ?>
+                                            <span class="badge badge-success">✓ Selected (L1)</span>
+                                        <?php else: ?>
+                                            <span class="badge badge-neutral">Competing</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -114,31 +122,39 @@ $quotes = $pdo->query("
             <span class="badge badge-success">Verified GSTIN</span>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Supplier</th>
-                            <th>GSTIN</th>
-                            <th>Rating</th>
-                            <th>Categories</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($vendors as $v): ?>
+            <?php if (empty($vendors)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">🏢</div>
+                    <div class="empty-state-title">No Suppliers Enrolled</div>
+                    <div class="empty-state-sub">Registered vendors with valid GSTIN and institutional ratings will appear here.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td>
-                                    <strong><?= htmlspecialchars($v['company_name']) ?></strong>
-                                    <div style="font-size: 11px; color: #64748b;"><?= htmlspecialchars($v['contact_person']) ?> &bull; <?= htmlspecialchars($v['mobile_number']) ?></div>
-                                </td>
-                                <td><code><?= htmlspecialchars($v['gst_number']) ?></code></td>
-                                <td><strong style="color: #d97706;">★ <?= $v['performance_rating'] ?></strong></td>
-                                <td style="font-size: 11.5px;"><?= htmlspecialchars(substr($v['product_categories'] ?? '', 0, 25)) ?>...</td>
+                                <th>Supplier</th>
+                                <th>GSTIN</th>
+                                <th class="text-center">Rating</th>
+                                <th>Categories</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($vendors as $v): ?>
+                                <tr>
+                                    <td>
+                                        <strong><?= htmlspecialchars($v['company_name']) ?></strong>
+                                        <div style="font-size: 11px; color: #64748b;"><?= htmlspecialchars($v['contact_person']) ?> &bull; <?= htmlspecialchars($v['mobile_number']) ?></div>
+                                    </td>
+                                    <td><code><?= htmlspecialchars($v['gst_number']) ?></code></td>
+                                    <td class="text-center"><strong style="color: #d97706;">★ <?= $v['performance_rating'] ?></strong></td>
+                                    <td style="font-size: 11.5px;"><?= htmlspecialchars(substr($v['product_categories'] ?? '', 0, 25)) ?>...</td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

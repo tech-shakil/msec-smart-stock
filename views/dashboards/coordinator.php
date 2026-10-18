@@ -62,17 +62,17 @@ $inwardVouchers = $pdo->query("
 <div class="stats-grid">
     <div class="stat-card warning">
         <div class="stat-title">Awaiting Spec Inspection</div>
-        <div class="stat-value"><?= sprintf("%02d", $pendingInspections) ?></div>
+        <div class="stat-value"><?= number_format($pendingInspections) ?></div>
         <div class="stat-subtext">Pre-HOD technical verification required</div>
     </div>
     <div class="stat-card danger">
         <div class="stat-title">Inward Vouchers To Acknowledge</div>
-        <div class="stat-value"><?= sprintf("%02d", $pendingChallans) ?></div>
+        <div class="stat-value"><?= number_format($pendingChallans) ?></div>
         <div class="stat-subtext">Material delivered from Central Store</div>
     </div>
     <div class="stat-card info">
         <div class="stat-title">Department Transfers in Pipeline</div>
-        <div class="stat-value"><?= sprintf("%02d", $activeTransfers) ?></div>
+        <div class="stat-value"><?= number_format($activeTransfers) ?></div>
         <div class="stat-subtext">Inter-department hardware movements</div>
     </div>
     <div class="stat-card success">
@@ -87,28 +87,32 @@ $inwardVouchers = $pdo->query("
     <div class="card">
         <div class="card-header">
             <div class="card-title">🔍 Staff & Lab Indents Awaiting Technical Inspection</div>
-            <span class="badge badge-warning"><?= count($inspectionQueue) ?> Pending</span>
+            <?php if (count($inspectionQueue) > 0): ?>
+                <span class="badge badge-warning"><?= count($inspectionQueue) ?> Pending</span>
+            <?php else: ?>
+                <span class="badge badge-success">Clear</span>
+            <?php endif; ?>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Indent</th>
-                            <th>Staff / Faculty</th>
-                            <th>Purpose / Priority</th>
-                            <th>Amount</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($inspectionQueue)): ?>
+            <?php if (empty($inspectionQueue)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">✅</div>
+                    <div class="empty-state-title">All Indents Inspected</div>
+                    <div class="empty-state-sub">Zero staff or lab requisitions are awaiting technical review. All verified requests have been forwarded to HOD.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td colspan="5" style="text-align: center; padding: 24px; color: #16a34a;">
-                                    ✓ All department requests physically inspected. Zero pending items.
-                                </td>
+                                <th>Indent</th>
+                                <th>Staff / Faculty</th>
+                                <th>Purpose / Priority</th>
+                                <th class="text-right">Amount</th>
+                                <th class="text-center">Action</th>
                             </tr>
-                        <?php else: ?>
+                        </thead>
+                        <tbody>
                             <?php foreach ($inspectionQueue as $iq): ?>
                                 <tr>
                                     <td><strong><?= htmlspecialchars($iq['request_code']) ?></strong></td>
@@ -120,16 +124,16 @@ $inwardVouchers = $pdo->query("
                                         <?= htmlspecialchars(substr($iq['purpose'], 0, 30)) ?>...
                                         <span class="badge badge-neutral" style="font-size: 10px;"><?= htmlspecialchars($iq['priority'] ?? 'Normal') ?></span>
                                     </td>
-                                    <td><strong><?= CURRENCY_SYMBOL ?><?= number_format($iq['total_estimated_value']) ?></strong></td>
-                                    <td>
-                                        <a href="index.php?route=view_request&id=<?= $iq['id'] ?>" class="btn btn-primary btn-sm">Inspect Specs &rarr;</a>
+                                    <td class="text-right"><strong><?= CURRENCY_SYMBOL ?><?= number_format($iq['total_estimated_value']) ?></strong></td>
+                                    <td class="text-center">
+                                        <a href="index.php?route=view_request&id=<?= $iq['id'] ?>" class="btn btn-primary btn-sm">Inspect &rarr;</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -137,45 +141,49 @@ $inwardVouchers = $pdo->query("
     <div class="card">
         <div class="card-header">
             <div class="card-title">📦 Store Delivery Challans Awaiting Receipt Acknowledgment</div>
-            <span class="badge badge-danger"><?= count($inwardVouchers) ?> To Confirm</span>
+            <?php if (count($inwardVouchers) > 0): ?>
+                <span class="badge badge-danger"><?= count($inwardVouchers) ?> To Confirm</span>
+            <?php else: ?>
+                <span class="badge badge-success">All Received</span>
+            <?php endif; ?>
         </div>
         <div class="card-body" style="padding: 0;">
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Voucher #</th>
-                            <th>Store</th>
-                            <th>Date Dispatched</th>
-                            <th>Acknowledge</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($inwardVouchers)): ?>
+            <?php if (empty($inwardVouchers)): ?>
+                <div class="empty-state-card">
+                    <div class="empty-state-icon">📦</div>
+                    <div class="empty-state-title">All Deliveries Acknowledged</div>
+                    <div class="empty-state-sub">Zero inbound stock deliveries awaiting physical receipt confirmation. All challans cleared.</div>
+                </div>
+            <?php else: ?>
+                <div class="data-table-container">
+                    <table class="data-table data-table-compact">
+                        <thead>
                             <tr>
-                                <td colspan="4" style="text-align: center; padding: 24px; color: #16a34a;">
-                                    ✓ All store shipments received and digitally acknowledged.
-                                </td>
+                                <th>Voucher #</th>
+                                <th>Store</th>
+                                <th class="text-right">Date Dispatched</th>
+                                <th class="text-center">Acknowledge</th>
                             </tr>
-                        <?php else: ?>
+                        </thead>
+                        <tbody>
                             <?php foreach ($inwardVouchers as $iv): ?>
                                 <tr>
                                     <td><code><?= htmlspecialchars($iv['issue_code']) ?></code></td>
                                     <td><strong><?= htmlspecialchars($iv['store_name']) ?></strong></td>
-                                    <td style="font-size: 11.5px;"><?= date('d M Y', strtotime($iv['issue_date'])) ?></td>
-                                    <td>
+                                    <td class="text-right" style="font-size: 11.5px;"><?= date('d M Y', strtotime($iv['issue_date'])) ?></td>
+                                    <td class="text-center">
                                         <form method="POST" action="index.php?route=ack_issue">
                                             <input type="hidden" name="issue_id" value="<?= $iv['id'] ?>">
                                             <input type="hidden" name="dept_id" value="<?= $deptId ?>">
-                                            <button type="submit" class="btn btn-success btn-sm">✓ Confirm Receipt</button>
+                                            <button type="submit" class="btn btn-success btn-sm">✓ Confirm</button>
                                         </form>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
